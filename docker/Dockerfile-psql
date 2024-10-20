@@ -1,0 +1,21 @@
+FROM postgres:17.0
+
+# OS Setup
+RUN apt update
+RUN apt-get install -y sudo
+
+# Postgresql extension
+RUN apt-get install -y postgresql-contrib
+RUN apt-get install -y postgis postgresql-17-postgis-3
+RUN apt-get install -y postgresql-17-pgvector
+
+# Clean up
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/*
+
+# Make postgres user sudoer (maybe don't want this in production)
+RUN echo "postgres        ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers
+RUN sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
+
+# Add the database initialization script
+ADD docker/psql/init.sql /docker-entrypoint-initdb.d
