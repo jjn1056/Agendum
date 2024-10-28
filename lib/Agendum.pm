@@ -24,6 +24,7 @@ __PACKAGE__->setup_plugins([qw/
 __PACKAGE__->config(
   disable_component_resolution_regex_fallback => 1,
   using_frontend_proxy => 1,
+  default_model => 'Schema::Task',
   'Plugin::Session' => { storage_secret_key => $ENV{SESSION_STORAGE_SECRET} },
   'Plugin::CSRFToken' => { auto_check =>1, default_secret => $ENV{CSRF_SECRET}, max_age=>36000 },
   'Model::Schema' => {

@@ -4,6 +4,7 @@ use base 'DBIx::Class::Schema';
 
 use Agendum::Syntax;
 use DBIx::Class::Helpers; # For the dependency tracker
+use DateTime::Format::Pg; # For the dependency tracker
 
 __PACKAGE__->load_components(qw/
   Helper::Schema::QuoteNames

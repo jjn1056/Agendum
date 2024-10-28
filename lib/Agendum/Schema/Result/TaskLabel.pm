@@ -6,8 +6,8 @@ use base 'Agendum::Schema::Result';
 __PACKAGE__->table("task_labels");
 
 __PACKAGE__->add_columns(
-  task_id => { data_type => 'integer', is_nullable => 0 },
-  label_id => { data_type => 'integer', is_nullable => 0 },
+  task_id => { data_type => 'integer', is_nullable => 0, is_foreign_key => 1 },
+  label_id => { data_type => 'integer', is_nullable => 0, is_foreign_key => 1 },
 );
 
 __PACKAGE__->set_primary_key("task_id", "label_id");

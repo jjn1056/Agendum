@@ -13,15 +13,12 @@ __PACKAGE__->add_columns(
 );
 
 __PACKAGE__->set_primary_key("label_id");
+__PACKAGE__->add_unique_constraint(['name']);
 
 __PACKAGE__->has_many(
   task_labels =>
   'Agendum::Schema::Result::TaskLabel',
   { 'foreign.label_id' => 'self.label_id' }
-);
-
-__PACKAGE__->many_to_many(
-  tasks => 'task_labels', 'task'
 );
 
 1;

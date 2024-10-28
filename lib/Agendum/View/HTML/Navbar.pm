@@ -1,6 +1,6 @@
 package Agendum::View::HTML::Navbar;
 
-use Moose;
+use CatalystX::Moose;
 use Agendum::Syntax;
 
 extends 'Agendum::View::HTML';
@@ -33,13 +33,13 @@ __DATA__
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav"><%= $self->generate_navlinks(sub ($actve, $link, $title) { %>
+      <ul class="navbar-nav"><%= $self->generate_navlinks(sub ($active, $link, $title) { %>
         <li class="nav-item">
           <a class="nav-link <%= $active %>" aria-current="page" href="<%= $link %>">
             <%= $title %>
           </a>
         </li>
-      <% } %></ul> 
+      <% }) %></ul> 
     </div>
   </div>
 </nav>

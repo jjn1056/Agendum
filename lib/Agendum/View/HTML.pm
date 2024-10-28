@@ -1,6 +1,6 @@
 package Agendum::View::HTML;
 
-use Moose;
+use CatalystX::Moose;
 use Agendum::Syntax;
 
 extends 'Catalyst::View::EmbeddedPerl::PerRequest';
@@ -11,3 +11,5 @@ __PACKAGE__->config(
   content_type=>'text/html; charset=UTF-8'
 );
 __PACKAGE__->meta->make_immutable;
+__DATA__
+<%= $content %>

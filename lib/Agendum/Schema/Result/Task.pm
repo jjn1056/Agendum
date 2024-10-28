@@ -29,5 +29,12 @@ __PACKAGE__->has_many(
   { 'foreign.task_id' => 'self.task_id' }
 );
 
+__PACKAGE__->accept_nested_for('task_labels', {allow_destroy=>1});
+
+__PACKAGE__->validates(title => (presence=>1, length=>[2,48]));
+__PACKAGE__->validates(description => (presence=>1, length=>[2,2000]));
+__PACKAGE__->validates(due_date => (presence=>1));
+__PACKAGE__->validates(priority => (presence=>1));
+__PACKAGE__->validates(status => (presence=>1));
 
 1;

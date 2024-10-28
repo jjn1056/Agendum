@@ -2,10 +2,12 @@ FROM perl:5.40.0
 WORKDIR /app
 
 # Core OS setup
+
 RUN apt-get update
 RUN apt-get install -yV postgresql-client git vim
 
 # Clean up
+
 RUN apt-get clean
 RUN rm -rf /var/lib/apt/lists/*
 
@@ -14,11 +16,15 @@ RUN rm -rf /var/lib/apt/lists/*
 # add application dependencies here.  You add those to the
 # cpanfile.
 
-RUN cpanm --notest App::cpanminus
+RUN cpanm --notest --reinstall App::cpanminus
 
 # Copy only the files needed for installing dependencies
+# We do a twop step process to avoid rebuilding the image
+# when the application source code changes.
+
 COPY cpanfile* .
-RUN cpanm --notest --from https://cpan.metacpan.org/ --installdeps .
+COPY Makefile .
+RUN make update-cpanlib
 
 # Copy the rest of the application source code
 COPY . .

@@ -7,7 +7,7 @@ LC_NAMESPACE := $(shell echo $(NAMESPACE) | tr 'A-Z' 'a-z')
 PID_FILE := /var/$(LC_NAMESPACE)_app_server.pid
 STATUS_FILE := /var/$(LC_NAMESPACE)_app_server.status
 WEB_SERVER_PORT := 5000
-SERVER_MAX_WORKERS := 3 # set to low for development
+SERVER_MAX_WORKERS := 5 # set to low for development
 SERVER_TIMEOUT := 900
 
 
@@ -26,7 +26,7 @@ help:
 
 update-cpanlib: ## Install CPAN libs
 	@echo "Installing CPAN libs..."
-	@cpanm --notest --installdeps .
+	@cpanm --mirror http://cpan.cpantesters.org/ --mirror-only --notest --installdeps .
 	@echo "Done!"
 
 update-db: ## Deploy Sqitch
@@ -43,14 +43,14 @@ update-all: update-cpanlib update-db ## Install CPAN libs and deploy Sqitch
 #### and need to be curated manually.
 
 dependencies: ## List current dependencies
-	@seen=""; \
-	scan-perl-prereqs lib | grep -Ev '^(strict|warnings|$(NAMESPACE).*)$$' | sort | while read -r module; do \
+	seen=""; \
+	scan-perl-prereqs lib | grep -Ev '^(strict|warnings|$(NAMESPACE).*)$$'  | sort | while read -r module; do \
 	  tarball=$$(cpanm --info "$$module"); \
 	  proto=$$(echo "$$tarball" | perl -ne 'print "$$1:$$2" if /\/(.*)-(\d+(?:\.\d+)*)\.tar\.gz$$/'); \
 	  main_module=$$(echo "$$proto" | perl -ne 'print "$$1" if /^(.+?):/' | perl -pe 's/-/::/g'); \
 	  version=$$(echo "$$proto" | perl -ne 'print "$$1" if /:(.+?)$$/'); \
-	  if [ -n "$$version" ] && ! echo "$$seen" | grep -q "$$main_module"; then \
-	    seen="$$seen $$main_module"; \
+	  if [ -n "$$version" ] && ! echo "$$seen" | grep -q "|$$main_module|"; then \
+	    seen="$$seen |$$main_module|"; \
 	    echo "requires '$$main_module', '$$version';"; \
 	  fi; \
 	done
@@ -60,28 +60,28 @@ dependencies: ## List current dependencies
 test: ## Run the test suite
 	@echo "Done!"
 
-server-start:
+server-start: ## Start the web application (current shell)
 	@echo "Starting web application..."
 	@start_server --port $(WEB_SERVER_PORT) --pid-file=$(PID_FILE) --status-file=$(STATUS_FILE) -- \
 		perl -Ilib \
-		./lib/$(NAMESPACE)/PSGI.pm run \
-		--server Gazelle --max-workers $(SERVER_MAX_WORKERS) --timeout $(SERVER_TIMEOUT) \
-		--max-reqs-per-child 1000 --min-reqs-per-child 800
+			-Iextlib/Valiant/lib/ \
+			./lib/$(NAMESPACE)/PSGI.pm run \
+		  --server Starman \
+			--max-workers $(SERVER_MAX_WORKERS) \
+			--preload-app $(NAMESPACE) \
+		  --timeout $(SERVER_TIMEOUT) \
+		  --max-reqs-per-child 1000 \
+		  --min-reqs-per-child 800
 	@echo "Started."
 
-server-stop:
+server-stop: ## Stop the web application (current shell)
 	@echo "Stopping web application..."
 	@start_server --pid-file=$(PID_FILE) --status-file=$(STATUS_FILE) --stop
 	@echo "Stopped."
 
-#server-restart:
-#	@echo "Restarting web application..."
-#	@start_server --pid-file=$(PID_FILE) --status-file=$(STATUS_FILE) --restart
-#	@echo "Restarted."
-
-server-restart:
-	@echo "restarting web application..."
-	@kill -HUP $$(cat $(PID_FILE));
+server-restart: ## Restart the web application (current shell)
+	@echo "Restarting web application..."
+	@start_server --pid-file=$(PID_FILE) --status-file=$(STATUS_FILE) --restart
 	@echo "Restarted."
 
 #### Stack commands
