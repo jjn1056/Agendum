@@ -6,6 +6,7 @@ use Agendum::Syntax;
 extends 'Agendum::View::HTML';
 
 has task => ( is => 'ro', required => 1, export=>1 );
+has saved => ( is => 'ro', required => 1 );
 
 sub priority_options ($self) {
   return [
@@ -19,24 +20,37 @@ sub priority_options ($self) {
 
 sub status_options ($self) {
   return [
-    ['Pending', 'pending'],
-    ['In Progress', 'in_progress'],
-    ['On Hold', 'on_hold'],
-    ['Blocked', 'blocked'],
-    ['Canceled', 'canceled'],
-    ['Completed', 'completed'],
+    'pending',
+    'in_progress',
+    'on_hold',
+    'blocked',
+    'canceled',
+    'completed',
   ];
 }
 
 sub labels ($self) {
-  return ($self->ctx->model('Schema::Label')->search_rs, id => 'name');
+  state $labels_rs = $self->ctx->model('Schema::Label')->search_rs;
+  return ($labels_rs, id => 'name');
+}
+
+sub if_saved ($self, $cb) {
+  ## only show if something was actually inserted or updated
+  ## either in the parent or any child.
+  if($self->saved) {
+    return $cb->();
+  } else {
+    return '';
+  }
 }
 
 __PACKAGE__->meta->make_immutable;
+
 __DATA__
+#
 # Style Content
-#22
-% content_append('css' => sub {
+#
+% push_style(sub {
     /* Ensure the checkbox list wraps properly */
     .checkbox-list {
       display: flex;
@@ -44,23 +58,37 @@ __DATA__
       gap: 10px;
     }
 % })
-# Main Content
-# Main Content
-# sdfsdfsdfsdf
-  %= form_for('task', sub($self, $fb, $task) {
+#
+# Main Content: Task Form
+#
+%= form_for('task', sub($self, $fb, $task) {
+
+  # Messages and global errors
+  %= $fb->model_errors(+{class=>'alert alert-danger', role=>'alert', show_message_on_field_errors=>'Please fix validation errors'})
+  %= $self->if_saved(sub {
+    <div class="alert alert-success" role="alert">Successfully Updated</div>
+  % })
+
+  # Add a fieldset for task details
   <fieldset class="mb-4">
     %= $fb->legend({class=>"text-muted fs-5 mb-2 pb-1 border-bottom"})
     <div class="row g-3 px-2">
+
+      # Add a title field
       <div class="col-12 mt-1">
         %= $fb->label('title', {class=>"form-label"})
         %= $fb->input('title', {class=>"form-control", errors_classes=>"is-invalid", placeholder=>"Enter task title here..."})
         %= $fb->errors_for('title', {show_empty=>1, class=>"invalid-feedback"})
       </div>
+
+      # Add a description field
       <div class="col-12">
         %= $fb->label('description', {class=>"form-label"})
         %= $fb->text_area('description', {class=>"form-control", errors_classes=>"is-invalid", rows=>5, placeholder=>"Enter task description here..."})
         %= $fb->errors_for('description', {class=>"invalid-feedback"})
       </div>
+
+      # Add a priority field
       <div class="col-md-4 col-sm-12">
         %= $fb->label('priority', {class=>"form-label"})
         %= $fb->select('priority', $self->priority_options, {class=>"form-control", errors_classes=>"is-invalid"})
@@ -75,8 +103,6 @@ __DATA__
       </div>
 
       # Add a status field
-
-      # sss
       <div class="col-md-4 col-sm-12">
         %= $fb->label('status', {class=>"form-label"})
         %= $fb->select('status', $self->status_options, {class=>"form-control", errors_classes=>"is-invalid"})
@@ -85,8 +111,10 @@ __DATA__
       </div>
     </div>
   </fieldset>
+
+  # Add a fieldset for task labels
   <fieldset class="mb-4">
-    %= $fb->legend_for('task_labels', +{class=>"text-muted fs-5 mb-2 pb-1 border-bottom"}),
+    %= $fb->legend_for('task_labels', +{class=>"text-muted fs-5 mb-2 pb-1 border-bottom"})
     %= $fb->collection_checkbox({task_labels => 'label_id'}, $self->labels, {class=>'checkbox-list p-2'}, sub($fb_labels) {
       <div class="form-check">
         %= $fb_labels->checkbox({class=>"form-check-input", errors_classes=>"is-invalid"})
@@ -95,8 +123,40 @@ __DATA__
     % })
     %= $fb->errors_for('task_labels', {class=>"invalid-feedback"})
   </fieldset>
-  <div class="mt-3">
-    %= $fb->model_errors(+{class=>'alert alert-danger', role=>'alert', show_message_on_field_errors=>'Please fix validation errors'})
-    %= $fb->submit({class=>"btn btn-primary w-100"})
+
+  # Comments
+  <fieldset class="mb-4">
+    %= $fb->legend_for('comments', {class=>"text-muted fs-5 mb-2 pb-1 border-bottom"})
+      %= $fb->errors_for('comments', +{ class=>'alert alert-danger', role=>'alert' })
+      <div class="col-12">
+          % my $showing_add_comment = 0;
+          %= $fb->fields_for('comments', +{include_id=>0}, sub($self, $fb_cc, $cc) {
+            # If the comment has an error show a form to fix, otherwise just show the comment
+            % if (!$cc->in_storage) {
+              % $showing_add_comment = 1;
+              %= $fb_cc->text_area('content', {class=>"form-control", errors_classes=>"is-invalid", rows=>5, placeholder=>"Enter comment here..."})
+              %= $fb_cc->errors_for('content', {class=>"invalid-feedback"})
+            % }
+            % if ($cc->in_storage) {
+              <small class="text-muted">$cc->created_at->strftime('%Y-%m-%d %H:%M')</small>
+              <p>$cc->content</p>
+              %= $fb_cc->hidden('content')
+              %= $fb_cc->emit_hidden_ids
+            % }
+          % }, sub {
+            % if ($task->comments->count == 0) {
+              <div class="alert alert-info" role="alert">No comments yet</div>
+            %}
+          % }) 
+      </div>
+    % if( !$fb->errors_for('comments') && !$showing_add_comment ) {
+      %= $fb->button('add_empty_comment', {class=>"btn btn-primary w-100", value=>1, type=>"submit"}, 'Add Comment')
+    % } 
+  </fieldset>
+
+  # Show global errors and submit button
+  <div class="mb-4">
+    %= $fb->submit({class=>"btn mb-2 btn-primary w-100"})
+    <a href="/task/list" class="btn btn-success w-100">Return to List</a>
   </div>
 % })

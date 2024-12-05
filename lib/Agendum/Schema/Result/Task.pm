@@ -30,6 +30,7 @@ __PACKAGE__->has_many(
 );
 
 __PACKAGE__->accept_nested_for('task_labels', {allow_destroy=>1});
+__PACKAGE__->accept_nested_for('comments', {allow_destroy=>1});
 
 __PACKAGE__->validates(title => (presence=>1, length=>[2,48]));
 __PACKAGE__->validates(description => (presence=>1, length=>[2,2000]));

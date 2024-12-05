@@ -9,37 +9,96 @@ has tasks => (is=>'ro', required=>1);
 
 sub title ($self) { return 'Your Tasks' }
 
+sub priority ($self, $task) {
+  return $task->priority;
+}
+
+sub due_date ($self, $task) {
+  return $task->due_date->strftime('%Y-%m-%d');
+}
+
+sub status ($self, $task) {
+  return $task->human_label_name($task->status);
+}
+
+sub over_tasks ($self, $cb) {
+  my @display_tasks = map {
+    +{
+      id => $_->id,
+      title => $_->title,
+      priority => $self->priority($_),
+      due_date => $self->due_date($_),
+      status => $self->status($_),
+      url => $self->ctx->uri('update', [$_->id]),
+    }
+  } $self->tasks->all;
+  return $self->over(@display_tasks, $cb);
+}
+
+sub nav_line ($self, $pager, $cb) {
+  my $nav_line = $pager->navigation_line;
+  return '' unless $nav_line;
+  return $cb->($nav_line);
+}
+
 __PACKAGE__->meta->make_immutable;
 __DATA__
+#
 # Custom Styles
-% content_for('css' => sub {
-    /* Add a maximum width to the form for desktop screens */
+#
+% push_style(sub {
     .list-container {
       max-width: 800px;
     }
+    .pager_current_page {
+      font-weight: bold;
+    }
+    .pager_page {
+      margin: 0 5px;
+    }
 % })
-# Main Content
+#
+# Main Content: Task List
+#
 %= view('HTML::Navbar', active_link=>'task_list')
 <div class="container mt-5 list-container">
-  <h1 class="mb-4 text-muted fs-5">Your Tasks</h1> 
-  <div class="d-grid gap-3 ">
-    # Render a list of tasks as links to update
-    % foreach my $task ($self->tasks->all) {
-    <div class="card p-3">
-      <div class="d-flex justify-content-between align-items-center">
-        <a href="/task/update/<%= $task->task_id %>" class="text-decoration-none">
-          <h5 class="m-0"><%= $task->title %></h5>
-        </a>
-      </div>
-      <div class="mt-2">
-        <span class="badge bg-primary">Priority: <%= $task->priority %></span>
-        <span class="badge bg-secondary">Due: <%= $task->due_date %></span>
-        <span class="badge bg-info">Status: <%= $task->status %></span>
-      </div>
-    </div>
-    % }
-  </div>
-  <div class="mt-4">
-    <a href="/task/add" class="btn btn-primary w-100">Add Task</a>
+  %= pager_for('tasks', +{}, sub ($self, $pager, $tasks) {
+    <table class='table table-striped table-bordered'>
+      <legend class="text-muted fs-5 mb-2 pb-1 border-bottom">$pager->window_info</legend>
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Priority</th>
+          <th>Due Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      # Display the tasks
+      <tbody>
+        %= $self->over_tasks(sub ($task, $inf) {
+          <tr>
+            <td><a href="$task->{url}">$task->{title}</a></td>
+            <td>$task->{priority}</td>
+            <td>$task->{due_date}</td>
+            <td>$task->{status}</td>
+          </tr>
+        % })
+      </tbody>
+
+      # Display the navigation line (if needed)
+      %= $self->nav_line($pager, sub ($nav_line) {
+        <tfoot>
+          <tr>
+            <td colspan="4">
+              $nav_line
+            </td>
+          </tr>
+        </tfoot>
+      % })
+    </table>
+  % })
+  <div class="mt-4 mb-4">
+  <a href="/task/add" class="btn btn-primary w-100">Add Task</a>
   </div>
 </div>

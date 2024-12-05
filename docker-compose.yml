@@ -8,13 +8,15 @@ services:
     networks:
       - agendum_network
     build: 
-       context: .
-       dockerfile: docker/Dockerfile
+      context: .
+      dockerfile: docker/Dockerfile
+    image: app_agendum:latest
     ports:
       - "5000:5000"
     environment:
       - CATALYST_DEBUG=1
       - DBIC_TRACE=1
+      - MULTICREATE_DEBUG=1
       - SESSION_STORAGE_SECRET=${SESSION_STORAGE_SECRET:-agendum_dev_session_secret}
       - CSRF_SECRET=${CSRF_SECRET:-agendum_dev_csrf_secret}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-agendum_dev_pg_pass}
@@ -35,6 +37,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile-psql
+    image: db_agendum:latest
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U agendum_dbuser -d agendum"]

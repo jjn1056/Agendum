@@ -5,14 +5,15 @@ use Agendum::Syntax;
 
 extends 'Agendum::View::HTML::Page';
 
-has task => ( is => 'ro', required => 1 );
+has task => ( is => 'ro', required => 1, export => 1 );
+has saved => ( is => 'rw', required => 1, default => 0, export => 1 );
 
 sub title ($self) { return 'Update Task' }
 
 __PACKAGE__->meta->make_immutable;
 __DATA__
 # Custom Styles
-% content_for('css' => sub {
+% push_style(sub {
     /* Add a maximum width to the form for desktop screens */
     .form-container {
       max-width: 800px;
@@ -28,5 +29,5 @@ __DATA__
 # Main Content
 %= view('HTML::Navbar', active_link=>'task_list')
 <div class="container form-container mt-5">
-  %= view('HTML::Task::_Form', task=>$self->task)
+  %= view('HTML::Task::_Form', task=>$task, saved=>$saved)
 </div>

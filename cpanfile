@@ -1,19 +1,21 @@
 # use 'make dependencies' to manage this list.
 
-requires 'Catalyst::Runtime', '5.90131';
+requires 'Catalyst::Runtime', '5.90132';
 requires 'CatalystX::RequestModel', '0.019';
 requires 'Catalyst::ControllerPerContext', '0.008';
 requires 'Catalyst::ControllerRole::At', '0.008';
 requires 'Catalyst::Model::DBIC::Schema', '0.66';
-requires 'Catalyst::View::EmbeddedPerl::PerRequest', '0.001011';
-requires 'Catalyst::View::EmbeddedPerl::PerRequest::ValiantRole', '0.001005';
+requires 'Catalyst::View::EmbeddedPerl::PerRequest', '0.001014';
+requires 'Catalyst::View::EmbeddedPerl::PerRequest::ValiantRole', '0.001006';
 requires 'DBIx::Class', '0.082843';
 requires 'DBIx::Class::BcryptColumn', '0.001003';
-requires 'DBIx::Class::Helpers', '2.036000';
+requires 'DBIx::Class::Helpers', '2.037000';
 requires 'DBIx::Class::ResultClass::TrackColumns', '0.001002';
-requires 'Valiant', '0.002005';
+requires 'DBIx::Class::ResultSet::SetControl', '0.002';
+requires 'Valiant', '0.002009';
 requires 'DateTime', '1.65';
 requires 'DateTime::Format::Pg', '0.16014';
+requires 'Data::Dumper::Concise', '2.023';
 requires 'IO', '1.55';
 requires 'Import::Into', '1.002005';
 requires 'Moose', '2.2207';

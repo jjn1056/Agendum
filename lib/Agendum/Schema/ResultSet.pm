@@ -4,6 +4,7 @@ use base 'DBIx::Class::ResultSet';
 use Agendum::Syntax;
 
 use Valiant; # For the dependency tracker
+use DBIx::Class::ResultSet::SetControl;
 
 __PACKAGE__->load_components(qw/
   Valiant::ResultSet
@@ -11,6 +12,7 @@ __PACKAGE__->load_components(qw/
   Helper::ResultSet::Me
   Helper::ResultSet::SetOperations
   Helper::ResultSet::IgnoreWantarray
+  ResultSet::SetControl
 /);
 
 sub to_array($self) {
