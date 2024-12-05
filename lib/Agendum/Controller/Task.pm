@@ -39,9 +39,7 @@ sub root :At('/task/...') Via('../root') ($self, $c) { }
 
     # POST /task/add
     sub create :Post('') Via('prepare_add') BodyModel() ($self, $c, $new_task, $rm) {
-      $new_task->set_columns_recursively($rm->model_params);
-      return $new_task->validate->build_related('comments') if $rm->add_empty_comment;
-      $new_task->insert;
+      $new_task->set_columns_recursively($rm->nested_params)->insert;
       $self->view->saved(1) if $new_task->valid;
     }
 
@@ -57,9 +55,7 @@ sub root :At('/task/...') Via('../root') ($self, $c) { }
 
     # PATCH /task/update/$id
     sub save :Patch('') Via('find') BodyModelFor('create') ($self, $c, $task, $rm) {
-      $task->set_columns_recursively($rm->model_params);
-      return $task->validate->build_related('comments') if $rm->add_empty_comment;
-      $task->update;
+      $task->set_columns_recursively($rm->nested_params)->update;
       $self->view->saved(1) if $task->valid;
     }
 

@@ -66,8 +66,8 @@ server-start: ## Start the web application (current shell)
 		perl -Ilib \
 		  ./lib/$(NAMESPACE)/PSGI.pm run \
 		    --server Starman \
-			--max-workers $(SERVER_MAX_WORKERS) \
-			--preload-app $(NAMESPACE) \
+				--max-workers $(SERVER_MAX_WORKERS) \
+				--preload-app $(NAMESPACE) \
 		    --timeout $(SERVER_TIMEOUT) \
 		    --max-reqs-per-child 1000 \
 		    --min-reqs-per-child 800

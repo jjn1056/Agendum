@@ -25,15 +25,6 @@ has task_labels => (is=>'ro', property=>+{
 
 has comments => (is=>'ro', property=>+{ indexed=>1, model=>'::Comments' });
 
-sub model_params($self) {
-  my $params = $self->nested_params;
-  delete $params->{add_empty_comment};
-  return $params;
-}
-
-# This is a flag to indicate that the user wants to add an empty comment
-has add_empty_comment => (is=>'ro', property=>1, default=>0);
-
 __PACKAGE__->meta->make_immutable();
 
 package Agendum::Model::Task::CreateBody::TaskLabel;

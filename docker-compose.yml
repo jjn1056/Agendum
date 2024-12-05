@@ -16,7 +16,6 @@ services:
     environment:
       - CATALYST_DEBUG=1
       - DBIC_TRACE=1
-      - MULTICREATE_DEBUG=1
       - SESSION_STORAGE_SECRET=${SESSION_STORAGE_SECRET:-agendum_dev_session_secret}
       - CSRF_SECRET=${CSRF_SECRET:-agendum_dev_csrf_secret}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-agendum_dev_pg_pass}
@@ -24,7 +23,6 @@ services:
       - POSTGRES_DB=agendum
       - DB_HOST=db_agendum
       - DB_PORT=5432
-      - DEBUG_TEMPLATE_EMBEDDED_PERL=1
     volumes:
       - ".:/app"
     depends_on:

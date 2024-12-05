@@ -137,20 +137,20 @@ __DATA__
               %= $fb_cc->text_area('content', {class=>"form-control", errors_classes=>"is-invalid", rows=>5, placeholder=>"Enter comment here..."})
               %= $fb_cc->errors_for('content', {class=>"invalid-feedback"})
             % } else {
-              <small class="text-muted">$cc->created_at->strftime('%Y-%m-%d %H:%M')</small>
+              <small class="text-muted">$cc->created_at->strftime('%Y-%m-%d %H:%M %Z')</small>
               <p>$cc->content</p>
               %= $fb_cc->hidden('content')
               %= $fb_cc->emit_hidden_ids
             % }
-          % }, sub {
+          % }, sub($self, $fb_final, $new_cc) {
             % if ($task->comments->count == 0) {
               <div class="alert alert-info" role="alert">No comments yet</div>
             % }
+            % if( !$fb->errors_for('comments') && !$showing_add_comment ) {
+              %= $fb_final->button( '_add', {class=>"btn btn-primary w-100", value=>1, type=>"submit"}, 'Add Comment') 
+            % } 
           % }) 
       </div>
-    % if( !$fb->errors_for('comments') && !$showing_add_comment ) {
-      %= $fb->button('add_empty_comment', {class=>"btn btn-primary w-100", value=>1, type=>"submit"}, 'Add Comment')
-    % } 
   </fieldset>
 
   # Show global errors and submit button
