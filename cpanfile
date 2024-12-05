@@ -5,7 +5,7 @@ requires 'CatalystX::RequestModel', '0.019';
 requires 'Catalyst::ControllerPerContext', '0.008';
 requires 'Catalyst::ControllerRole::At', '0.008';
 requires 'Catalyst::Model::DBIC::Schema', '0.66';
-requires 'Catalyst::View::EmbeddedPerl::PerRequest', '0.001014';
+requires 'Catalyst::View::EmbeddedPerl::PerRequest', '0.001015';
 requires 'Catalyst::View::EmbeddedPerl::PerRequest::ValiantRole', '0.001006';
 requires 'DBIx::Class', '0.082843';
 requires 'DBIx::Class::BcryptColumn', '0.001003';

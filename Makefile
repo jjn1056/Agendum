@@ -64,7 +64,6 @@ server-start: ## Start the web application (current shell)
 	@echo "Starting web application..."
 	@start_server --port $(WEB_SERVER_PORT) --pid-file=$(PID_FILE) --status-file=$(STATUS_FILE) -- \
 		perl -Ilib \
-		  -I extlib/TemplateEmbeddedPerl/lib \
 		  ./lib/$(NAMESPACE)/PSGI.pm run \
 		    --server Starman \
 			--max-workers $(SERVER_MAX_WORKERS) \

@@ -136,8 +136,7 @@ __DATA__
               % $showing_add_comment = 1;
               %= $fb_cc->text_area('content', {class=>"form-control", errors_classes=>"is-invalid", rows=>5, placeholder=>"Enter comment here..."})
               %= $fb_cc->errors_for('content', {class=>"invalid-feedback"})
-            % }
-            % if ($cc->in_storage) {
+            % } else {
               <small class="text-muted">$cc->created_at->strftime('%Y-%m-%d %H:%M')</small>
               <p>$cc->content</p>
               %= $fb_cc->hidden('content')
@@ -146,7 +145,7 @@ __DATA__
           % }, sub {
             % if ($task->comments->count == 0) {
               <div class="alert alert-info" role="alert">No comments yet</div>
-            %}
+            % }
           % }) 
       </div>
     % if( !$fb->errors_for('comments') && !$showing_add_comment ) {
