@@ -129,11 +129,11 @@ __DATA__
     %= $fb->legend_for('comments', {class=>"text-muted fs-5 mb-2 pb-1 border-bottom"})
       %= $fb->errors_for('comments', +{ class=>'alert alert-danger', role=>'alert' })
       <div class="col-12">
-          % my $showing_add_comment = 0;
+          % my $showing_empty_comment = 0;
           %= $fb->fields_for('comments', +{include_id=>0}, sub($self, $fb_cc, $cc) {
             # If the comment has an error show a form to fix, otherwise just show the comment
             % if (!$cc->in_storage) {
-              % $showing_add_comment = 1;
+              % $showing_empty_comment = 1;
               %= $fb_cc->text_area('content', {class=>"form-control", errors_classes=>"is-invalid", rows=>5, placeholder=>"Enter comment here..."})
               %= $fb_cc->errors_for('content', {class=>"invalid-feedback"})
             % } else {
@@ -146,7 +146,7 @@ __DATA__
             % if ($task->comments->count == 0) {
               <div class="alert alert-info" role="alert">No comments yet</div>
             % }
-            % if( !$fb->errors_for('comments') && !$showing_add_comment ) {
+            % if( !$fb->errors_for('comments') && !$showing_empty_comment ) {
               %= $fb_final->button( '_add', {class=>"btn btn-primary w-100", formaction=>$fb->form_action_for({add_empty_comment=>1}), value=>1, type=>"submit"}, 'Add Comment') 
             % } 
           % }) 
