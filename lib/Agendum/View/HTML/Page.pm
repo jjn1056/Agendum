@@ -22,6 +22,8 @@ __DATA__
     <title><%= $self->title %></title>
     <link href="/static/global.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
     %= get_styles()
   </head>
   <body>
@@ -53,7 +55,7 @@ __DATA__
           <div class="col-md-4">
             <h5>Follow Us</h5>
             <div class="d-flex">
-              <a href="https://www.linkedin.com/in/jnapiorkowski/" class="text-light"><i class="bi bi-linkedin fs-4">Linkedin</i></a>
+              <a href="https://www.linkedin.com/in/jnapiorkowski/" class="text-light bi-linkedin text-decoration-none">&nbsp;john napiorkowski</a>
             </div>
           </div>
         </div>

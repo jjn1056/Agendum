@@ -38,8 +38,10 @@ sub root :At('/task/...') Via('../root') ($self, $c) { }
     sub add :Get('') Via('prepare_add') ($self, $c, $new_task) { return }
 
     # POST /task/add
-    sub create :Post('') Via('prepare_add') BodyModel() ($self, $c, $new_task, $rm) {
-      $new_task->set_columns_recursively($rm->nested_params)->insert;
+    sub create :Post('') Via('prepare_add') BodyModel() QueryModel() ($self, $c, $new_task, $rm, $q) {
+      $new_task->set_columns_recursively($rm->nested_params);
+      return $new_task->validate if $q->add_empty_comment;
+      $new_task->insert;
       $self->view->saved(1) if $new_task->valid;
     }
 
@@ -54,8 +56,10 @@ sub root :At('/task/...') Via('../root') ($self, $c) { }
     sub update :Get('') Via('find') ($self, $c, $task) { return }
 
     # PATCH /task/update/$id
-    sub save :Patch('') Via('find') BodyModelFor('create') ($self, $c, $task, $rm) {
-      $task->set_columns_recursively($rm->nested_params)->update;
+    sub save :Patch('') Via('find') BodyModelFor('create') QueryModelFor('create') ($self, $c, $task, $rm, $q) {
+      $task->set_columns_recursively($rm->nested_params);
+      return $task->validate if $q->add_empty_comment;
+      $task->update;
       $self->view->saved(1) if $task->valid;
     }
 

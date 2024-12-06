@@ -147,7 +147,7 @@ __DATA__
               <div class="alert alert-info" role="alert">No comments yet</div>
             % }
             % if( !$fb->errors_for('comments') && !$showing_add_comment ) {
-              %= $fb_final->button( '_add', {class=>"btn btn-primary w-100", value=>1, type=>"submit"}, 'Add Comment') 
+              %= $fb_final->button( '_add', {class=>"btn btn-primary w-100", formaction=>$fb->form_action_for({add_empty_comment=>1}), value=>1, type=>"submit"}, 'Add Comment') 
             % } 
           % }) 
       </div>
