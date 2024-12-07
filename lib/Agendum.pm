@@ -7,8 +7,9 @@ use Moose;
 # Needed to make sure logs are written to STDOUT and STDERR
 # for docker container compatibility
 
-use IO::Handle;
-STDERR->autoflush(1);
+use IO::Handle; STDERR->autoflush(1);
+
+# Global plugins
 
 __PACKAGE__->setup_plugins([qw/
   Session
@@ -20,6 +21,8 @@ __PACKAGE__->setup_plugins([qw/
   ServeFile
   CSRFToken
 /]);
+
+# Global configuration
 
 __PACKAGE__->config(
   disable_component_resolution_regex_fallback => 1,

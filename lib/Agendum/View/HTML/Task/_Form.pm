@@ -130,7 +130,7 @@ __DATA__
       %= $fb->errors_for('comments', +{ class=>'alert alert-danger', role=>'alert' })
       <div class="col-12">
           % my $showing_empty_comment = 0;
-          %= $fb->fields_for('comments', +{include_id=>0}, sub($self, $fb_cc, $cc) {
+          %= $fb->fields_for('comments', sub($self, $fb_cc, $cc) {
             # If the comment has an error show a form to fix, otherwise just show the comment
             % if (!$cc->in_storage) {
               % $showing_empty_comment = 1;
@@ -140,7 +140,6 @@ __DATA__
               <small class="text-muted">$cc->created_at->strftime('%Y-%m-%d %H:%M %Z')</small>
               <p>$cc->content</p>
               %= $fb_cc->hidden('content')
-              %= $fb_cc->emit_hidden_ids
             % }
           % }, sub($self, $fb_final, $new_cc) {
             % if ($task->comments->count == 0) {

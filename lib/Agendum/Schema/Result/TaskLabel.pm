@@ -24,4 +24,6 @@ __PACKAGE__->belongs_to(
   { 'foreign.label_id' => 'self.label_id' }
 );
 
+__PACKAGE__->accept_nested_for('label', {find_with_uniques=>1, allow_destroy=>1});
+
 1;

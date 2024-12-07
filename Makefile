@@ -148,4 +148,4 @@ app-dependencies: ## Run 'make dependencies' inside the app container
 #### Testing
 
 prove: ## Run 'prove' inside the app container
-	docker-compose exec app_$(LC_NAMESPACE) prove -lvr $(filter-out app-prove,$(MAKECMDGOALS))
+	docker-compose exec app_$(LC_NAMESPACE) prove -lvr $(filter-out prove,$(MAKECMDGOALS))
