@@ -9,6 +9,8 @@ STATUS_FILE := /var/$(LC_NAMESPACE)_app_server.status
 WEB_SERVER_PORT := 5000
 SERVER_MAX_WORKERS := 5 # set to low for development
 SERVER_TIMEOUT := 900
+PERL := perl -Ilib
+PROVE := prove -lvr
 
 
 .PHONY: help update-cpanlib update-db update-all dependencies \
@@ -63,7 +65,7 @@ test: ## Run the test suite
 server-start: ## Start the web application (current shell)
 	@echo "Starting web application..."
 	@start_server --port $(WEB_SERVER_PORT) --pid-file=$(PID_FILE) --status-file=$(STATUS_FILE) -- \
-		perl -Ilib \
+		$(PERL) \
 		  ./lib/$(NAMESPACE)/PSGI.pm run \
 		    --server Starman \
 				--max-workers $(SERVER_MAX_WORKERS) \
@@ -148,4 +150,4 @@ app-dependencies: ## Run 'make dependencies' inside the app container
 #### Testing
 
 prove: ## Run 'prove' inside the app container
-	docker-compose exec app_$(LC_NAMESPACE) prove -lvr $(filter-out prove,$(MAKECMDGOALS))
+	docker-compose exec app_$(LC_NAMESPACE) $(PROVE) $(filter-out prove,$(MAKECMDGOALS))
