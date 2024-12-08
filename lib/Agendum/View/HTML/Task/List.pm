@@ -14,7 +14,21 @@ sub priority ($self, $task) {
 }
 
 sub due_date ($self, $task) {
-  return $task->due_date->strftime('%Y-%m-%d');
+  my $date = $task->due_date->strftime('%Y-%m-%d');
+
+  # If a task is due in the next three days, highlight it
+
+
+  if(DateTime->today > $task->due_date ) {
+    return $self->raw("<span class='bi bi-exclamation-circle text-danger'>&nbsp;$date</span>");
+  } 
+
+  if(DateTime->today->add(days=>3) >$task->due_date ) {
+    return $self->raw("<span class='bi bi-clock text-dark'>&nbsp;$date</span>");
+  }
+
+    return $self->raw("<span class='bi bi-check-circle text-success'>&nbsp;$date</span>");
+
 }
 
 sub status ($self, $task) {
