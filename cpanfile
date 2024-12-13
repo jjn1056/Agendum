@@ -12,7 +12,7 @@ requires 'DBIx::Class::BcryptColumn', '0.001003';
 requires 'DBIx::Class::Helpers', '2.037000';
 requires 'DBIx::Class::ResultClass::TrackColumns', '0.001002';
 requires 'DBIx::Class::ResultSet::SetControl', '0.002';
-requires 'Valiant', '0.002011';
+requires 'Valiant', '0.002012';
 requires 'DateTime', '1.65';
 requires 'DateTime::Format::Pg', '0.16014';
 requires 'Data::Dumper::Concise', '2.023';

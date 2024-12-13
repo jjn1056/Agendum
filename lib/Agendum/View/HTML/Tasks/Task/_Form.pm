@@ -1,4 +1,4 @@
-package Agendum::View::HTML::Task::_Form;
+package Agendum::View::HTML::Tasks::Task::_Form;
 
 use CatalystX::Moose;
 use Agendum::Syntax;
@@ -155,6 +155,6 @@ __DATA__
   # Show global errors and submit button
   <div class="mb-4">
     %= $fb->submit({class=>"btn mb-2 btn-primary w-100"})
-    <a href="/task/list" class="btn btn-success w-100">Return to List</a>
+    <a href="/tasks/list" class="btn btn-success w-100">Return to List</a>
   </div>
 % })

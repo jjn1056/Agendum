@@ -1,4 +1,4 @@
-package Agendum::Model::Task::CreateBody;
+package Agendum::Model::Tasks::Task::CreateBody;
 
 use Moose;
 use CatalystX::RequestModel;
@@ -27,7 +27,7 @@ has comments => (is=>'ro', property=>+{ indexed=>1, model=>'::Comments' });
 
 __PACKAGE__->meta->make_immutable();
 
-package Agendum::Model::Task::CreateBody::TaskLabel;
+package Agendum::Model::Tasks::Task::CreateBody::TaskLabel;
 
 use Moose;
 use CatalystX::RequestModel;
@@ -38,7 +38,7 @@ has label_id => (is=>'ro', property=>1);
 
 __PACKAGE__->meta->make_immutable();
 
-package Agendum::Model::Task::CreateBody::Comments;
+package Agendum::Model::Tasks::Task::CreateBody::Comments;
 
 use Moose;
 use CatalystX::RequestModel;

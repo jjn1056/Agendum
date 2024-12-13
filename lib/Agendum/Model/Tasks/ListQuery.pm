@@ -1,4 +1,4 @@
-package Agendum::Model::Task::ListQuery;
+package Agendum::Model::Tasks::ListQuery;
 
 use Moose;
 use CatalystX::QueryModel;

@@ -10,7 +10,7 @@ has active_link => (is=>'ro', required=>1);
 sub navlinks ($self) {
   my @links = (
     +{ href => $self->ctx->uri('/home/index'), data => {title=>'Home', key=>'home'} },
-    +{ href => $self->ctx->uri('/task/list'), data => {title=>'Tasks', key=>'task_list'} },
+    +{ href => $self->ctx->uri('/tasks/list'), data => {title=>'Tasks', key=>'task_list'} },
   );
   return @links;
 }

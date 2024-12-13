@@ -1,4 +1,4 @@
-package Agendum::Model::Task::CreateQuery;
+package Agendum::Model::Tasks::Task::CreateQuery;
 
 use Moose;
 use CatalystX::QueryModel;

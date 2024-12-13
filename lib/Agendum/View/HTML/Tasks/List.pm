@@ -1,4 +1,4 @@
-package Agendum::View::HTML::Task::List;
+package Agendum::View::HTML::Tasks::List;
 
 use CatalystX::Moose;
 use Agendum::Syntax;
@@ -43,7 +43,7 @@ sub over_tasks ($self, $cb) {
       priority => $self->priority($_),
       due_date => $self->due_date($_),
       status => $self->status($_),
-      url => $self->ctx->uri('update', [$_->id]),
+      url => $self->ctx->uri('task/update', [$_->id]),
     }
   } $self->tasks->all;
   return $self->over(@display_tasks, $cb);
@@ -113,6 +113,6 @@ __DATA__
     </table>
   % })
   <div class="mt-4 mb-4">
-  <a href="/task/add" class="btn btn-primary w-100">Add Task</a>
+  <a href="$self->ctx->uri('task/create')" class="btn btn-primary w-100">Add Task</a>
   </div>
 </div>
