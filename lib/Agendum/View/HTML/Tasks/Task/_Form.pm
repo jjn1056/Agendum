@@ -153,8 +153,11 @@ __DATA__
   </fieldset>
 
   # Show global errors and submit button
-  <div class="mb-4">
+  <div>
     %= $fb->submit({class=>"btn mb-2 btn-primary w-100"})
-    <a href="/tasks/list" class="btn btn-success w-100">Return to List</a>
+    % if($task->in_storage) {
+      <button class="btn mb-2 btn-danger w-100" formaction="$self->ctx->uri('delete', [$task->id], {'x-tunneled-method'=>'delete'})">Delete $task->model_name->human</button>
+    % }
+    <a href="$self->ctx->uri('../list')" class="btn btn-success w-100">Return to List</a>
   </div>
 % })

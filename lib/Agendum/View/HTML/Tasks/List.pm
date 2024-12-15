@@ -16,19 +16,17 @@ sub priority ($self, $task) {
 sub due_date ($self, $task) {
   my $date = $task->due_date->strftime('%Y-%m-%d');
 
-  # If a task is due in the next three days, highlight it
-
-
+  # If a task is overdue, highlight it
   if(DateTime->today > $task->due_date ) {
     return $self->raw("<span class='bi bi-exclamation-circle text-danger'>&nbsp;$date</span>");
   } 
 
+  # If a task is due in the next three days, highlight it
   if(DateTime->today->add(days=>3) >$task->due_date ) {
     return $self->raw("<span class='bi bi-clock text-dark'>&nbsp;$date</span>");
   }
 
-    return $self->raw("<span class='bi bi-check-circle text-success'>&nbsp;$date</span>");
-
+  return $self->raw("<span class='bi bi-check-circle text-success'>&nbsp;$date</span>");
 }
 
 sub status ($self, $task) {
@@ -43,7 +41,8 @@ sub over_tasks ($self, $cb) {
       priority => $self->priority($_),
       due_date => $self->due_date($_),
       status => $self->status($_),
-      url => $self->ctx->uri('task/update', [$_->id]),
+      edit_url => $self->ctx->uri('task/update', [$_->id]),
+      show_url => $self->ctx->uri('task/show', [$_->id]),
     }
   } $self->tasks->all;
   return $self->over(@display_tasks, $cb);
@@ -70,6 +69,10 @@ __DATA__
     .pager_page {
       margin: 0 5px;
     }
+    .table .no-border-stripes {
+      --bs-table-bg-type: transparent !important;
+      border: none;
+    }
 % })
 #
 # Main Content: Task List
@@ -77,14 +80,15 @@ __DATA__
 %= view('HTML::Navbar', active_link=>'task_list')
 <div class="container mt-5 list-container">
   %= pager_for('tasks', +{}, sub ($self, $pager, $tasks) {
-    <table class='table table-striped table-bordered'>
+    <table class='table table-striped'>
       <legend class="text-muted fs-5 mb-2 pb-1 border-bottom">$pager->window_info</legend>
       <thead>
         <tr>
-          <th>Title</th>
-          <th>Priority</th>
-          <th>Due Date</th>
-          <th>Status</th>
+          <th scope="col">Title</th>
+          <th scope="col">Priority</th>
+          <th scope="col">Due Date</th>
+          <th scope="col">Status</th>
+          <th scope="col" class="visually-hidden">Actions</th>
         </tr>
       </thead>
 
@@ -92,10 +96,13 @@ __DATA__
       <tbody>
         %= $self->over_tasks(sub ($task, $inf) {
           <tr>
-            <td><a href="$task->{url}">$task->{title}</a></td>
+            <td><a href="$task->{show_url}">$task->{title}</a></td>
             <td>$task->{priority}</td>
             <td>$task->{due_date}</td>
             <td>$task->{status}</td>
+            <td class="pb-1 pt-1 ps-3 no-border-stripes">
+              <a href="$task->{edit_url}" class="btn btn-sm btn-primary">Edit</button>
+            </td>
           </tr>
         % })
       </tbody>
@@ -104,7 +111,7 @@ __DATA__
       %= $self->nav_line($pager, sub ($nav_line) {
         <tfoot>
           <tr>
-            <td colspan="4">
+            <td colspan="4" style="--bs-table-bg-type: transparent;border: none;">
               $nav_line
             </td>
           </tr>

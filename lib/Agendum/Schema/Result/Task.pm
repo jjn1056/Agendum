@@ -29,6 +29,8 @@ __PACKAGE__->has_many(
   { 'foreign.task_id' => 'self.task_id' }
 );
 
+__PACKAGE__->many_to_many('labels', 'task_labels', 'label');
+
 __PACKAGE__->accept_nested_for('task_labels', {allow_destroy=>1});
 __PACKAGE__->accept_nested_for('comments', {allow_destroy=>1});
 

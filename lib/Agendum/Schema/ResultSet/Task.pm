@@ -13,7 +13,10 @@ sub new_task ($self) {
 }
 
 sub find_with_comments_labels ($self, $task_id) {
-  return $self->find($task_id, {prefetch=>[{'task_labels'=>'label'}, 'comments']});
+  return $self->find($task_id, {
+    prefetch=>[{'task_labels'=>'label'}, 'comments'],
+    order_by=>[$self->me.'task_id', 'task_labels.label_id', 'comments.comment_id'],
+  });
 }
 
 1;

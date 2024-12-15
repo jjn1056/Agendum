@@ -28,6 +28,6 @@ __DATA__
 % })
 # Main Content
 %= view('HTML::Navbar', active_link=>'task_list')
-<div class="container form-container mt-5">
+<div class="container form-container mt-5 mb-5">
   %= view('HTML::Tasks::Task::_Form', task=>$task, saved=>$saved)
 </div>
