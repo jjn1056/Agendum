@@ -115,7 +115,7 @@ __DATA__
   # Add a fieldset for task labels
   <fieldset class="mb-4">
     %= $fb->legend_for('task_labels', +{class=>"text-muted fs-5 mb-2 pb-1 border-bottom"})
-    %= $fb->collection_checkbox({task_labels => 'label_id'}, $self->labels, {class=>'checkbox-list p-2'}, sub($fb_labels) {
+    %= $fb->collection_checkbox({task_labels => 'label_id'}, $self->labels, {class=>'checkbox-list px-2'}, sub($fb_labels) {
       <div class="form-check">
         %= $fb_labels->checkbox({class=>"form-check-input", errors_classes=>"is-invalid"})
         %= $fb_labels->label({class=>"form-check-label"})
@@ -156,7 +156,12 @@ __DATA__
   <div>
     %= $fb->submit({class=>"btn mb-2 btn-primary w-100"})
     % if($task->in_storage) {
-      <button class="btn mb-2 btn-danger w-100" formaction="$self->ctx->uri('delete', [$task->id], {'x-tunneled-method'=>'delete'})">Delete $task->model_name->human</button>
+      <button 
+        class="btn mb-2 btn-danger w-100"
+        onclick="return confirm('Are you sure you want to delete this task?')"
+        formaction="$self->ctx->uri('delete', [$task->id], {'x-tunneled-method'=>'delete'})">
+          Delete $task->model_name->human
+      </button>
     % }
     <a href="$self->ctx->uri('../list')" class="btn btn-success w-100">Return to List</a>
   </div>

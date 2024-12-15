@@ -41,23 +41,23 @@ __DATA__
         <div class="row g-3">
           <div class="col-md-6">
             <label class="form-label">Title</label>
-            <p class="form-control-plaintext">$task->title</p>
+            <p class="form-control-plaintext text-secondary">$task->title</p>
           </div>
           <div class="col-md-6">
             <label class="form-label">Priority</label>
-            <p class="form-control-plaintext"><%= $self->priority_options->[$task->priority] %></p>
+            <p class="form-control-plaintext text-secondary"><%= $self->priority_options->[$task->priority] %></p>
           </div>
           <div class="col-12">
             <label class="form-label">Description</label>
-            <p class="form-control-plaintext">$task->description</p>
+            <p class="form-control-plaintext text-secondary">$task->description</p>
           </div>
           <div class="col-md-6">
             <label class="form-label">Due Date</label>
-            <p class="form-control-plaintext">$task->due_date->strftime('%Y-%m-%d')</p>
+            <p class="form-control-plaintext text-secondary">$task->due_date->strftime('%Y-%m-%d')</p>
           </div>
           <div class="col-md-6">
             <label class="form-label">Status</label>
-            <p class="form-control-plaintext">$task->human_label_name($task->status)</p>
+            <p class="form-control-plaintext text-secondary">$task->human_label_name($task->status)</p>
           </div>
         </div>
       </fieldset>
@@ -94,15 +94,16 @@ __DATA__
       </fieldset>
     </div>
     <div class="card-footer">
-      <div class="d-flex justify-content-between">
-        <div class="d-flex gap-2">
-          <a href="$self->ctx->uri('update',[$self->task->id])" class="btn btn-primary px-4">Edit</a>
-          <form method="post" action="$self->ctx->uri('delete', [$self->task->id],{'x-tunneled-method'=>'delete'})">
-            <button class="btn btn-danger px-4">Delete</button>
-          </form>
-        </div>
-        <a href="$self->ctx->uri('../list')" class="btn btn-success px-4">Return to List</a>
+      <div class="d-flex gap-2 pb-2">
+        <!-- Equal-width buttons -->
+        <a href="$self->ctx->uri('update',[$self->task->id])" class="btn btn-primary flex-fill text-center">Edit</a>
+        <form method="post" action="$self->ctx->uri('delete', [$self->task->id],{'x-tunneled-method'=>'delete'})" class="flex-fill">
+          <button 
+            class="btn btn-danger w-100" 
+            onclick="return confirm('Are you sure you want to delete this task?')">Delete</button>
+        </form>
       </div>
+      <a href="$self->ctx->uri('../list')" class="btn btn-success flex-fill text-center w-100">Return to List</a>
     </div>
   </div>
 </div>

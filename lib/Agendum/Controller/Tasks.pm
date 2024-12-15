@@ -8,7 +8,7 @@ extends 'Agendum::Controller';
 
 # ANY /tasks/...
 sub root :At('/tasks/...') Via('../root') ($self, $c) {
-  $c->action->next(my $tasks = $c->model);
+  $c->action->next(my $tasks = $c->model->with_comments_labels);
 }
 
   # GET /tasks/list

@@ -35,7 +35,7 @@ sub root :At('/...') Via('../root') ($self, $c, $tasks) { $c->action->next($task
 
   # ANY /tasks/$id/...
   sub find :At('{:Int}/...') Via('root') ($self, $c, $tasks, $task_id) {
-    my $task = $tasks->find_with_comments_labels($task_id)
+    my $task = $tasks->find($task_id)
       // return $c->detach_error(404);
     $c->action->next($task);
   }
