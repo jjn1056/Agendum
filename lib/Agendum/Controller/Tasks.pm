@@ -2,7 +2,6 @@ package Agendum::Controller::Tasks;
 
 use CatalystX::Moose;
 use Agendum::Syntax;
-use Types::Standard qw(Int);
 
 extends 'Agendum::Controller';
 
