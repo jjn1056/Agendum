@@ -27,6 +27,7 @@ DOCKERHOST ?= $(shell ifconfig \
     | awk '{ print $$2 }' \
     | cut -f2 -d: \
     | head -n1)
+export DOCKERHOST
 
 # Docker stuff, might need to tweak for prod
 

@@ -30,6 +30,10 @@ requires 'LWP::UserAgent';
 requires 'LWP::Protocol::https';
 requires 'JSON::MaybeXS';
 requires 'Crypt::JWT';
+requires 'Crypt::PRNG';
+requires 'MIME::Base64';
+requires 'LWP::Authen::OAuth2';
+
 
 # These are Catalyst Plugins that get loaded dynamically so are not
 # detected by the scanner.  We need to add them manually and manage
