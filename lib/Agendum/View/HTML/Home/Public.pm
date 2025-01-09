@@ -1,4 +1,4 @@
-package Agendum::View::HTML::Home::Index;
+package Agendum::View::HTML::Home::Public;
 
 use CatalystX::Moose;
 use Agendum::Syntax;
@@ -39,7 +39,7 @@ __DATA__
 #
 # Main Content
 #
-%= view('HTML::Navbar', active_link=>'home')
+%= view('HTML::Navbar', active_link=>'home/public')
 <!-- Hero Section -->
 <header class="hero">
   <div class="container">

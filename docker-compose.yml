@@ -1,9 +1,6 @@
-version: "3.9"
 name: agendum
 services:
   app_agendum:  # Add web service
-    env_file:
-      - .env
     container_name: app_agendum
     networks:
       - agendum_network
@@ -14,15 +11,19 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - CATALYST_DEBUG=1
-      - DBIC_TRACE=1
-      - SESSION_STORAGE_SECRET=${SESSION_STORAGE_SECRET:-agendum_dev_session_secret}
-      - CSRF_SECRET=${CSRF_SECRET:-agendum_dev_csrf_secret}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-agendum_dev_pg_pass}
-      - POSTGRES_USER=agendum_dbuser
-      - POSTGRES_DB=agendum
-      - DB_HOST=db_agendum
-      - DB_PORT=5432
+      - SESSION_STORAGE_SECRET=${SESSION_STORAGE_SECRET}
+      - CSRF_SECRET=${CSRF_SECRET}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - CATME_OAUTH2_CLIENT_ID=${CATME_OAUTH2_CLIENT_ID}
+      - CATME_OAUTH2_CLIENT_SECRET=${CATME_OAUTH2_CLIENT_SECRET}
+      - CATME_OAUTH2_OPENID_CONF=${CATME_OAUTH2_OPENID_CONF}
+      - CATME_OAUTH2_JWKS_URI=${CATME_OAUTH2_JWKS_URI}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_PORT=${DB_PORT}
+      - DB_HOST=${DB_HOST}
+      - AGENDUM_ENV=${AGENDUM_ENV}
     volumes:
       - ".:/app"
     depends_on:
@@ -45,9 +46,9 @@ services:
     volumes:
       -  db_agendum_data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_USER=agendum_dbuser
-      - POSTGRES_DB=agendum
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-agendum_dev_pg_pass}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
     ports:
       - "5432:5432" # For Development only
 volumes:

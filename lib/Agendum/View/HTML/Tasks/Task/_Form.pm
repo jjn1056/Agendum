@@ -63,15 +63,16 @@ __DATA__
 #
 %= form_for('task', sub($self, $fb, $task) {
 
-  # Messages and global errors
-  %= $fb->model_errors(+{class=>'alert alert-danger', role=>'alert', show_message_on_field_errors=>'Please fix validation errors'})
-  %= $self->if_saved(sub {
-    <div class="alert alert-success" role="alert">Successfully Updated</div>
-  % })
-
-  # Add a fieldset for task details
+   # Add a fieldset for task details
   <fieldset class="mb-4">
     %= $fb->legend({class=>"text-muted fs-5 mb-2 pb-1 border-bottom"})
+
+    # Messages and global errors
+    %= $fb->model_errors(+{class=>'alert alert-danger', role=>'alert', show_message_on_field_errors=>'Please fix validation errors'})
+    %= $self->if_saved(sub {
+      <div class="alert alert-success" role="alert">Successfully Updated</div>
+    % })
+
     <div class="row g-3 px-2">
 
       # Add a title field
@@ -129,11 +130,9 @@ __DATA__
     %= $fb->legend_for('comments', {class=>"text-muted fs-5 mb-2 pb-1 border-bottom"})
       %= $fb->errors_for('comments', +{ class=>'alert alert-danger', role=>'alert' })
       <div class="col-12">
-          % my $showing_empty_comment = 0;
           %= $fb->fields_for('comments', sub($self, $fb_cc, $cc) {
             # If the comment has an error show a form to fix, otherwise just show the comment
             % if (!$cc->in_storage) {
-              % $showing_empty_comment = 1;
               %= $fb_cc->text_area('content', {class=>"form-control", errors_classes=>"is-invalid", rows=>5, placeholder=>"Enter comment here..."})
               %= $fb_cc->errors_for('content', {class=>"invalid-feedback"})
             % } else {
@@ -145,7 +144,7 @@ __DATA__
             % if ($task->comments->count == 0) {
               <div class="alert alert-info" role="alert">No comments yet</div>
             % }
-            % if( !$fb->errors_for('comments') && !$showing_empty_comment ) {
+            % if( !$fb->errors_for('comments') && !$task->comments->final_comment_unstored ) {
               %= $fb_final->button( '_add', {class=>"btn btn-primary w-100", formaction=>$fb->form_action_for({add_empty_comment=>1}), value=>1, type=>"submit"}, 'Add Comment') 
             % } 
           % }) 

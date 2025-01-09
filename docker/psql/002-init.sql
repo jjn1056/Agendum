@@ -9,3 +9,6 @@ CREATE EXTENSION IF NOT EXISTS postgis_topology;
 
 -- Enable pg_vector extension
 CREATE EXTENSION IF NOT EXISTS vector;
+
+-- Enable pg_cron extension
+CREATE EXTENSION IF NOT EXISTS pg_cron;

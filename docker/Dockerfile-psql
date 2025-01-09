@@ -1,4 +1,4 @@
-FROM postgres:17.0
+FROM postgres:17.2
 
 # OS Setup
 RUN apt update
@@ -8,6 +8,7 @@ RUN apt-get install -y sudo
 RUN apt-get install -y postgresql-contrib
 RUN apt-get install -y postgis postgresql-17-postgis-3
 RUN apt-get install -y postgresql-17-pgvector
+RUN apt-get install -y postgresql-17-cron
 
 # Clean up
 RUN apt-get clean
@@ -17,5 +18,8 @@ RUN rm -rf /var/lib/apt/lists/*
 RUN echo "postgres        ALL=(ALL)       NOPASSWD: ALL" >> /etc/sudoers
 RUN sed -i "s/^.*requiretty/#Defaults requiretty/" /etc/sudoers
 
+RUN echo "shared_preload_libraries = 'pg_cron'" >> /usr/share/postgresql/postgresql.conf.sample
+
 # Add the database initialization script
-ADD docker/psql/init.sql /docker-entrypoint-initdb.d
+ADD docker/psql/001-conf.sh /docker-entrypoint-initdb.d
+ADD docker/psql/002-init.sql /docker-entrypoint-initdb.d

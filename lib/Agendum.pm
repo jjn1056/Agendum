@@ -3,6 +3,7 @@ package Agendum;
 use Catalyst;
 use Valiant::I18N; # Needed to load $HOME/locale
 use Moose;
+use Agendum::Syntax;
 
 # Needed to make sure logs are written to STDOUT and STDERR
 # for docker container compatibility
@@ -39,7 +40,17 @@ __PACKAGE__->config(
       password => $ENV{POSTGRES_PASSWORD},
     },
   },
+  'Model::Oauth2Client::Catme' => {
+    client_id => $ENV{CATME_OAUTH2_CLIENT_ID},
+    client_secret => $ENV{CATME_OAUTH2_CLIENT_SECRET},
+    open_id_conf_url => $ENV{CATME_OAUTH2_OPENID_CONF},
+    jwks_uri => $ENV{CATME_OAUTH2_JWKS_URI},
+  },
 );
+
+sub is_development {
+  return $ENV{AGENDUM_ENV} eq 'dev';
+}
 
 __PACKAGE__->setup();
 __PACKAGE__->meta->make_immutable();

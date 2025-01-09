@@ -6,6 +6,8 @@ use Agendum::Syntax;
 extends 'Agendum::View::HTML::Page';
 
 has tasks => (is=>'ro', required=>1);
+#has sort_column => (is=>'ro', required=>1);
+#has sort_direction => (is=>'ro', required=>1);
 
 sub title ($self) { return 'Your Tasks' }
 
@@ -73,6 +75,30 @@ __DATA__
       --bs-table-bg-type: transparent !important;
       border: none;
     }
+
+    .table thead th:not(:nth-last-child(-n+2)) {
+      position: relative;
+    }
+    .table thead th:not(:nth-last-child(-n+2))::after {
+      content: "";
+      position: absolute;
+      top: 25%;
+      bottom: 25%;
+      right: 0;
+      width: 1px;
+      background-color: #dee2e6;
+    }
+
+    /* sorting */
+    .sort-icon {
+      margin-left: 0.25rem;
+      font-size: 0.9rem;
+    } 
+    th.sortable {
+      position: relative;
+      cursor: pointer;
+      user-select: none;
+    }
 % })
 #
 # Main Content: Task List
@@ -84,7 +110,7 @@ __DATA__
       <legend class="text-muted fs-5 mb-2 pb-1 border-bottom">$pager->window_info</legend>
       <thead>
         <tr>
-          <th scope="col">Title</th>
+          <th scope="col" role="button">Title<i class="bi bi-caret-up-fill sort-icon"></i></th>
           <th scope="col">Priority</th>
           <th scope="col">Due Date</th>
           <th scope="col">Status</th>

@@ -5,14 +5,14 @@ requires 'CatalystX::RequestModel', '0.019';
 requires 'Catalyst::ControllerPerContext', '0.008';
 requires 'Catalyst::ControllerRole::At', '0.008';
 requires 'Catalyst::Model::DBIC::Schema', '0.66';
-requires 'Catalyst::View::EmbeddedPerl::PerRequest', '0.001015';
+requires 'Catalyst::View::EmbeddedPerl::PerRequest', '0.001018';
 requires 'Catalyst::View::EmbeddedPerl::PerRequest::ValiantRole', '0.001006';
 requires 'DBIx::Class', '0.082843';
 requires 'DBIx::Class::BcryptColumn', '0.001003';
 requires 'DBIx::Class::Helpers', '2.037000';
 requires 'DBIx::Class::ResultClass::TrackColumns', '0.001002';
 requires 'DBIx::Class::ResultSet::SetControl', '0.002';
-requires 'Valiant', '0.002012';
+requires 'Valiant', '0.002015';
 requires 'DateTime', '1.65';
 requires 'DateTime::Format::Pg', '0.16014';
 requires 'Data::Dumper::Concise', '2.023';
@@ -24,6 +24,12 @@ requires 'Patterns::UndefObject', '0.004';
 requires 'Plack', '1.0051';
 requires 'Type::Tiny', '2.006000';
 requires 'base', '2.23';
+
+requires 'URI';
+requires 'LWP::UserAgent';
+requires 'LWP::Protocol::https';
+requires 'JSON::MaybeXS';
+requires 'Crypt::JWT';
 
 # These are Catalyst Plugins that get loaded dynamically so are not
 # detected by the scanner.  We need to add them manually and manage
