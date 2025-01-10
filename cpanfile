@@ -32,6 +32,7 @@ requires 'JSON::MaybeXS';
 requires 'Crypt::JWT';
 requires 'Crypt::PRNG';
 requires 'MIME::Base64';
+requires 'Catalyst::Component::ApplicationAttribute';
 requires 'LWP::Authen::OAuth2';
 
 

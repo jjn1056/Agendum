@@ -1,4 +1,4 @@
-package Agendum::View::HTML::Login;
+package Agendum::View::HTML::Session::Login;
 
 use CatalystX::Moose;
 use Agendum::Syntax;

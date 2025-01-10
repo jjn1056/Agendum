@@ -11,7 +11,7 @@ sub navlinks ($self) {
   my @links = (
     +{ href => $self->ctx->uri('/home/user'), data => {title=>'Home', key=>'home_user'} },
     +{ href => $self->ctx->uri('/tasks/list'), data => {title=>'Tasks', key=>'task_list'} },
-    +{ href => $self->ctx->uri('/logout'), data => {title=>'Logout', key=>'logout'} },
+    +{ href => $self->ctx->uri('/session/logout'), data => {title=>'Logout', key=>'logout'} },
   );
   return @links;
 }
@@ -25,14 +25,14 @@ sub generate_navlinks ($self, $cb) {
     }
   } else {
     my $active = $self->active_link eq 'login' ? 'active' : '';
-    push @links, $cb->($active, $self->ctx->uri('/login'), 'Login');
+    push @links, $cb->($active, $self->ctx->uri('/session/login'), 'Login');
   }
   return $self->safe_concat(@links);
 }
 
 __PACKAGE__->meta->make_immutable;
 __DATA__
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
+<nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">Agendum</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

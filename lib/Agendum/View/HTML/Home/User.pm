@@ -18,4 +18,8 @@ __DATA__
 # Main Content
 #
 %= view('HTML::Navbar', active_link=>'home_user')
-You are logged in.
+<div class="container mt-5 mb-5">
+  <h1>Welcome</h1>
+  <p class="lead">You have been logged into  the application</p>
+  <p>If this was real life there'd be a list of things you could do here</p>
+</div>

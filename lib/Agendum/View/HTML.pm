@@ -13,3 +13,5 @@ __PACKAGE__->config(
 );
 
 __PACKAGE__->meta->make_immutable;
+__DATA__
+%= $content

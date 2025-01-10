@@ -1,3 +1,6 @@
 form.form-60ch {
   max-width: 60ch;
 }
+body {
+  padding-top: 20px; /* Adjust based on the height of your navbar */
+}
