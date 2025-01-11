@@ -27,5 +27,5 @@ __DATA__
   <h1>Logout</h1>
   <p class="lead">You have been logged out of the application</p>
   <p>You may wish to also log out of CATME</p>
- <a href="https://catme.org/login/logout" class="btn btn-primary w-30">Catme.org Logout</a>
+ <a href="$c->catme_uri_for('/login/logout')" class="btn btn-primary w-30">Catme.org Logout</a>
 </div>

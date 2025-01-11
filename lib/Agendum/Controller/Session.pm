@@ -16,13 +16,19 @@ sub root :At('/...') Via('../public') ($self, $c) { }
       unless $c->model('Session')->check_oauth2_state($c->req->param('state'));
     $c->model('Session')->clear_oauth2_state; # one time use
 
-    # Get the client object
-    my $client = $c->model('Oauth2Client::Catme')
-      ->client($c->req->param('code'), $c->uri_for('/callback'));
+    # Get the tokens or return an error if we can't
+    my ($tokens, $err) = $c->model('WebService::Catme::Auth')
+      ->get_tokens_from_code($c->req->param('code'), $c->uri_for('/callback'));
+    $c->detach_error(400, +{error => $err}) if $err;
 
     # Based on the id_token, find or create the Person and set the session
     my $user = $c->model('Session::User')
-      ->authenticate_user_from_id_token(%{$client->id_info});
+      ->authenticate_user_from_id_token(%{$tokens->{decoded}{id_token}});
+    
+    # We need to set the access and refresh tokens in the session
+    $c->model('Session')->set_oauth2_tokens(
+      $tokens->{access_token},
+      $tokens->{refresh_token});
 
     # Redirect to the user page
     return $c->redirect_to_action('/home/user');
@@ -42,7 +48,7 @@ sub root :At('/...') Via('../public') ($self, $c) { }
     # (which is this the 'callback' action in this controller).
 
     my $state = $c->model('Session')->generate_oauth2_state;
-    my $authorize_link = $c->model('Oauth2Client::Catme')
+    my $authorize_link = $c->model('WebService::Catme::Auth')
       ->authorize_link($c->uri('callback'), $state);
     return $self->view(authorize_link=>$authorize_link);
   }

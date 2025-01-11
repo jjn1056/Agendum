@@ -11,13 +11,25 @@ with 'Catalyst::Component::InstancePerContext';
 
 has person_id => (is=>'rw', clearer=>'clear_person_id', predicate=>'has_person_id');
 has oauth2_state => (is=>'rw', clearer=>'clear_oauth2_state', predicate=>'has_oauth2_state');
+has access_token => (is=>'rw', clearer=>'clear_access_token', predicate=>'has_access_token');
+has refresh_token => (is=>'rw', clearer=>'clear_refresh_token', predicate=>'has_refresh_token');
 
 sub build_per_context_instance($self, $c) {
   return bless $c->session, ref($self);
 }
 
+# Set the access and refresh tokens in the session
+sub set_oauth2_tokens($self, $access, $refresh) {
+  $self->access_token($access);
+  $self->refresh_token($refresh);
+}
+
+# Clear the person_id and the oauth2_state
 sub logout($self) {
   $self->clear_person_id;
+  $self->clear_oauth2_state;
+  $self->clear_access_token;
+  $self->clear_refresh_token;
 }
 
 sub check_oauth2_state($self, $state) {

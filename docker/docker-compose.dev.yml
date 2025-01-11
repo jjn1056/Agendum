@@ -2,7 +2,6 @@ name: agendum
 services:
   app_agendum:
     environment:
-      - CATME_HOST=${CATME_HOST}
       - DOCKERHOST=${DOCKERHOST}
       - DBIC_TRACE=${DBIC_TRACE}
       - CATALYST_DEBUG=${CATALYST_DEBUG}

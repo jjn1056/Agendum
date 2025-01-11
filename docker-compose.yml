@@ -24,6 +24,8 @@ services:
       - DB_PORT=${DB_PORT}
       - DB_HOST=${DB_HOST}
       - AGENDUM_ENV=${AGENDUM_ENV}
+      - CATME_HOST=${CATME_HOST}
+      - CATME_PORT=${CATME_PORT}
     volumes:
       - ".:/app"
     depends_on:

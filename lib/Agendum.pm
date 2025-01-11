@@ -4,6 +4,7 @@ use Catalyst;
 use Valiant::I18N; # Needed to load $HOME/locale
 use Moose;
 use Agendum::Syntax;
+use URI;
 
 # Needed to make sure logs are written to STDOUT and STDERR
 # for docker container compatibility
@@ -40,7 +41,7 @@ __PACKAGE__->config(
       password => $ENV{POSTGRES_PASSWORD},
     },
   },
-  'Model::Oauth2Client::Catme' => {
+  'Model::WebService::Catme::Auth' => {
     client_id => $ENV{CATME_OAUTH2_CLIENT_ID},
     client_secret => $ENV{CATME_OAUTH2_CLIENT_SECRET},
     open_id_conf_url => $ENV{CATME_OAUTH2_OPENID_CONF},
@@ -50,6 +51,14 @@ __PACKAGE__->config(
 
 sub is_development {
   return $ENV{AGENDUM_ENV} eq 'dev';
+}
+
+my $base_uri = URI->new("https://$ENV{CATME_HOST}:$ENV{CATME_PORT}");
+sub catme_uri_for($self, $path='', $query=+{}) {
+  my $uri = URI->new($base_uri);
+  $uri->path($path) if $path;
+  $uri->query_form($query) if $query;
+  return $uri;
 }
 
 __PACKAGE__->setup();
