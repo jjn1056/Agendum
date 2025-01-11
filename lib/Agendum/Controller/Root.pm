@@ -19,12 +19,7 @@ sub root :At('/...') ($self, $c) { }
       $c->detach_error(404, +{error => "Requested URL not found."});
   }
 
-  ## GET /healthcheck
-  sub healthcheck :Get('healthcheck') Via('root') ($self, $c) {
-    return $c->res->body('OK');
-  }
-
-   ## ANY /...
+  ## ANY /...
   sub public :At('/...') Via('root') ($self, $c) { }
 
   ## ANY /...
