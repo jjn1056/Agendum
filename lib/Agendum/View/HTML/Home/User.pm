@@ -5,7 +5,7 @@ use Agendum::Syntax;
 
 extends 'Agendum::View::HTML::Page';
 
-has data => (is=>'ro', isa=>'HashRef', required=>1);
+has data => (is=>'ro', required=>1);
 
 sub title ($self) { return 'Welcome to Agendum' }
 

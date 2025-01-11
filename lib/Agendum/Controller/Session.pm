@@ -30,6 +30,7 @@ sub root :At('/...') Via('../public') ($self, $c) { }
     my $authorize_link = $c->model('WebService::Catme::Auth')
       ->authorize_link($c->uri('callback'), $state);
 
+    $c->log->debug("Redirecting to: $authorize_link");
     return $c->res->redirect($authorize_link);
   }
 
@@ -42,9 +43,8 @@ sub root :At('/...') Via('../public') ($self, $c) { }
     # from the 'login' action.
 
     # Error if the state doesn't match
-    $c->detach_error(400, +{error => "Invalid state."})
+    $c->detach_error(400, +{error => "Invalid 'state' returned from OAuth2 server."})
       unless $c->model('Session')->check_oauth2_state($c->req->param('state'));
-    $c->model('Session')->clear_oauth2_state; # one time use
 
     # Get the tokens or return an error if we can't
     my ($tokens, $err) = $c->model('WebService::Catme::Auth')
@@ -69,8 +69,5 @@ sub root :At('/...') Via('../public') ($self, $c) { }
     $c->model('Session::User')->logout;
     return $self->view();
   }
-
-# The order of the Action Roles is important!!
-sub end :Action Does('RenderErrors') Does('RenderView') { }
 
 __PACKAGE__->meta->make_immutable;

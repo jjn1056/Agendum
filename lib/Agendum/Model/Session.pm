@@ -41,7 +41,8 @@ sub generate_oauth2_state($self) {
   my $random_bytes = random_bytes($length); # Generate cryptographically secure random bytes
   my $nonce = encode_base64($random_bytes, ''); # Encode to base64 (URL safe)
   $nonce =~ tr/+=\//-_/d; # Make it URL Query parameter safe
-  $self->oauth2_state($nonce);
+
+  $self->oauth2_state($nonce); # Save the nonce in the session
   return $nonce;
 }
 
