@@ -35,7 +35,7 @@ sub root :At('/...') Via('../public') ($self, $c) { }
   }
 
   ## GET /callback
-  sub callback :Get('callback') Via('root') ($self, $c) {
+  sub callback :Get('callback') Via('root') QueryModel ($self, $c, $q) {
 
     # This is the 'redirect_uri' target for the OAuth2 flow.  We need to
     # check the state and then get the tokens from the code and set the
@@ -43,16 +43,16 @@ sub root :At('/...') Via('../public') ($self, $c) { }
     # from the 'login' action.
 
     # Check for any errors from the OAuth2 server
-    $c->detach_error(400, +{error => $c->req->query_parameters->{'error_description'}})
-      if $c->req->query_parameters->{'error'};
+    $c->detach_error(400, +{error => $q->error_description})
+      if $q->has_error;
 
     # Error if the state doesn't match
     $c->detach_error(400, +{error => "Invalid 'state' returned from OAuth2 server."})
-      unless $c->model('Session')->check_oauth2_state($c->req->param('state'));
+      unless $c->model('Session')->check_oauth2_state($q->state);
 
     # Get the tokens or return an error if we can't
     my ($tokens, $err) = $c->model('WebService::Catme::Auth')
-      ->get_tokens_from_code($c->req->query_parameters->{'code'}, $c->uri('callback'));
+      ->get_tokens_from_code($q->code, $c->uri('callback'));
     $c->detach_error(400, +{error => $err}) if $err;
 
     # Based on the id_token, find or create the Person and set the session
