@@ -22,7 +22,6 @@ requires 'IO', '1.55';
 requires 'IO::Socket::SSL', '2.089';
 requires 'Import::Into', '1.002005';
 requires 'JSON::MaybeXS', '1.004008';
-requires 'libwww::perl', '6.77';
 requires 'MIME::Base64', '3.16';
 requires 'Moose', '2.2207';
 requires 'Object::Tap', '1.000006';
@@ -54,6 +53,7 @@ requires 'Server::Starter', '0.35';
 requires 'Perl::PrereqScanner', '1.100';
 requires 'Starman';
 requires 'Net::Server::SS::PreFork';
+requires 'LWP', '6.77';
 
 # Test dependencies are currently manually managed. (updated 12 Oct 2024)
 
