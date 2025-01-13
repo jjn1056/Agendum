@@ -43,8 +43,8 @@ sub root :At('/...') Via('../public') ($self, $c) { }
     # from the 'login' action.
 
     # Check for any errors from the OAuth2 server
-    $c->detach_error(400, +{error => $c->req->parameters->{'error_description'}})
-      if $c->req->parameters->{'error'};
+    $c->detach_error(400, +{error => $c->req->query_parameters->{'error_description'}})
+      if $c->req->query_parameters->{'error'};
 
     # Error if the state doesn't match
     $c->detach_error(400, +{error => "Invalid 'state' returned from OAuth2 server."})
@@ -52,7 +52,7 @@ sub root :At('/...') Via('../public') ($self, $c) { }
 
     # Get the tokens or return an error if we can't
     my ($tokens, $err) = $c->model('WebService::Catme::Auth')
-      ->get_tokens_from_code($c->req->parameters->{'code'}, $c->uri_for('callback'));
+      ->get_tokens_from_code($c->req->query_parameters->{'code'}, $c->uri_for('callback'));
     $c->detach_error(400, +{error => $err}) if $err;
 
     # Based on the id_token, find or create the Person and set the session
