@@ -42,6 +42,10 @@ sub root :At('/...') Via('../public') ($self, $c) { }
     # session with the access and refresh tokens.  This all get initiated
     # from the 'login' action.
 
+    # Check for any errors from the OAuth2 server
+    $c->detach_error(400, +{error => $c->req->param('error_description')})
+      if $c->req->param('error');
+
     # Error if the state doesn't match
     $c->detach_error(400, +{error => "Invalid 'state' returned from OAuth2 server."})
       unless $c->model('Session')->check_oauth2_state($c->req->param('state'));

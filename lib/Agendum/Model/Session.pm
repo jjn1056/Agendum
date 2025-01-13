@@ -32,8 +32,11 @@ sub logout($self) {
   $self->clear_refresh_token;
 }
 
+# Check the oauth2 state and clear it, because this is a one time use
 sub check_oauth2_state($self, $state) {
-  return $self->oauth2_state eq $state;
+  my $check = $self->oauth2_state eq $state;
+  $self->clear_oauth2_state;
+  return $check;
 }
 
 sub generate_oauth2_state($self) {
