@@ -48,7 +48,7 @@ sub root :At('/...') Via('../public') ($self, $c) { }
 
     # Get the tokens or return an error if we can't
     my ($tokens, $err) = $c->model('WebService::Catme::Auth')
-      ->get_tokens_from_code($c->req->param('code'), $c->uri_for('/callback'));
+      ->get_tokens_from_code($c->req->param('code'), $c->uri_for('callback'));
     $c->detach_error(400, +{error => $err}) if $err;
 
     # Based on the id_token, find or create the Person and set the session
