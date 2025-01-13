@@ -5,7 +5,12 @@ use Agendum::Syntax;
 
 extends 'Agendum::View::HTML';
 
-has active_link => (is=>'ro', required=>1);
+has active_link => (is=>'ro', predicate=>'has_active_link', required=>0);
+
+sub active_link_eq($self, $link) {
+  return '' unless $self->has_active_link;
+  return $self->active_link eq $link ? 'active' : '';
+}
 
 sub navlinks ($self) {
   my @links = (
@@ -20,12 +25,17 @@ sub generate_navlinks ($self, $cb) {
   my @links = ();
   if($self->ctx->model('Session::User')->authenticated) {
     foreach my $link ($self->navlinks) {
-      my $active = $self->active_link eq $link->{data}{key} ? 'active' : '';
-      push @links, $cb->($active, $link->{href}, $link->{data}{title});
+      push @links, $cb->(
+        $self->active_link_eq($link->{data}{key}), 
+        $link->{href}, 
+        $link->{data}{title}
+      );
     }
   } else {
-    my $active = $self->active_link eq 'login' ? 'active' : '';
-    push @links, $cb->($active, $self->ctx->uri('/session/login'), 'Login');
+    push @links, $cb->(
+      $self->active_link_eq('login'),
+      $self->ctx->uri('/session/login'),
+      'Login');
   }
   return $self->safe_concat(@links);
 }

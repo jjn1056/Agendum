@@ -54,6 +54,7 @@ requires 'Perl::PrereqScanner', '1.100';
 requires 'Starman';
 requires 'Net::Server::SS::PreFork';
 requires 'LWP', '6.77';
+requires 'LWP::Protocol::https', '6.14';
 
 # Test dependencies are currently manually managed. (updated 12 Oct 2024)
 

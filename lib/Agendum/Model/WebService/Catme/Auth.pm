@@ -7,6 +7,7 @@ use LWP::UserAgent;
 use JSON::MaybeXS;
 use IO::Socket::SSL;
 use Crypt::JWT 'decode_jwt';
+use Data::Dumper;
 
 extends 'Catalyst::Model';
 with 'Catalyst::Component::ApplicationAttribute';
@@ -115,20 +116,25 @@ sub get_tokens_from_code($self, $code, $redirect_uri) {
     redirect_uri => $redirect_uri,
     grant_type => 'authorization_code',
   ]);
+
+  # Get the response content, good or bad
+  my $response = $self->decode_json_defensive($res->decoded_content);
   
   # Fail fast if the request failed.  Expect a JSON response for the error
-  return (undef, $self->decode_json_defensive($res->decoded_content))
-    unless $res->is_success;
+  if(! $res->is_success) {
+    my $error_data = Dumper($response);
+    $self->_app->log->error("Failed to get tokens from code: $error_data");
+    return (undef, $response->{detail});
+  }
   
   # Otherwise decode the JSON and then decode each token
-  my $tokens = $self->decode_json_defensive($res->decoded_content);
   foreach my $key (qw(access_token id_token refresh_token)) {
-    my ($decoded, $err) = $self->decode_catme_jwt($tokens->{$key});
+    my ($decoded, $err) = $self->decode_catme_jwt($response->{$key});
     return (undef, $err) if $err;
-    $tokens->{decoded}{$key} = $decoded;
+    $response->{decoded}{$key} = $decoded;
   }
 
-  return ($tokens, undef);
+  return ($response, undef);
 }
 
 sub get_tokens_from_refresh($self, $refresh) {
