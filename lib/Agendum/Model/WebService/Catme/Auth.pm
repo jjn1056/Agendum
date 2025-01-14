@@ -37,7 +37,6 @@ has open_id_configuration => (
   default => sub($self) {
     my $conf = $self->open_id_conf_url;
     my $res = $self->ua->get($conf);
-
     die "Failed to fetch OpenID configuration: ".$res->status_line
       unless $res->is_success;
     return $self->decode_json_defensive($res->decoded_content);
@@ -106,58 +105,52 @@ sub authorize_link($self, $redirect_uri, $state) {
 #   }
 # }
 
-sub get_tokens_from_code($self, $code, $redirect_uri) {
+sub _fetch_tokens($self, $params) {
+
+  # Get the token endpoint from the OpenID configuration and then
+  # post the request to that endpoint with the given parameters
   my $conf = $self->open_id_configuration;
-  my $token_endpoint = URI->new($conf->{token_endpoint});
-  my $res = $self->ua->post("$token_endpoint", [
-    client_id => $self->client_id,
+  my $endpoint = URI->new($conf->{token_endpoint});
+  my $res = $self->ua->post("$endpoint", [
+    client_id     => $self->client_id,
     client_secret => $self->client_secret,
-    code => $code,
-    redirect_uri => $redirect_uri,
-    grant_type => 'authorization_code',
+    %$params
   ]);
 
-  # Get the response content, good or bad
+  # We expect JSON but decode defensively just in case
   my $response = $self->decode_json_defensive($res->decoded_content);
-  
-  # Fail fast if the request failed.  Expect a JSON response for the error
-  if(! $res->is_success) {
+
+  # If the response is an error, then return the error message
+  unless ($res->is_success) {
     my $error_data = Dumper($response);
-    $self->_app->log->error("Failed to get tokens from code: $error_data");
+    $self->_app->log->error("Failed to get tokens from $params->{grant_type}: $error_data");
     return (undef, $response->{detail});
   }
-  
-  # Otherwise decode the JSON and then decode each token
-  foreach my $key (qw(access_token id_token refresh_token)) {
+
+  # Otherwise decode the tokens and return them
+  for my $key (qw(access_token id_token refresh_token)) {
     my ($decoded, $err) = $self->decode_catme_jwt($response->{$key});
     return (undef, $err) if $err;
     $response->{decoded}{$key} = $decoded;
   }
-
   return ($response, undef);
 }
 
+# Given an authorization code and a redirect_uri, get the tokens
+sub get_tokens_from_code($self, $code, $redirect_uri) {
+  return $self->_fetch_tokens({
+    code         => $code,
+    redirect_uri => $redirect_uri,
+    grant_type   => 'authorization_code'
+  });
+}
+
+# Given a refresh token, get the tokens
 sub get_tokens_from_refresh($self, $refresh) {
-  my $conf = $self->open_id_configuration;
-  my $token_endpoint = URI->new($conf->{token_endpoint});
-  my $res = $self->ua->post("$token_endpoint", [
-    client_id => $self->client_id,
-    client_secret => $self->client_secret,
+  return $self->_fetch_tokens({
     refresh_token => $refresh,
-    grant_type => 'refresh_token',
-  ]);
-  # Fail fast if the request failed.  Expect a JSON response for the error
-  return (undef, $self->decode_json_defensive($res->decoded_content)) unless $res->is_success;
-
-  # Otherwise decode the JSON and then decode each token
-  my $tokens = $self->decode_json_defensive($res->decoded_content);
-  foreach my $key (qw(access_token id_token refresh_token)) {
-    my ($decoded, $err) = $self->decode_catme_jwt($tokens->{$key});
-    return (undef, $err) if $err;
-    $tokens->{decoded}{$key} = $decoded;
-  }
-
-  return ($tokens, undef);
+    grant_type    => 'refresh_token'
+  });
 }
 
 # Verify the iss, aud, sub, and exp claims. algorithm???
@@ -183,7 +176,7 @@ sub decode_catme_jwt {
 
 sub decode_json_defensive($self, $json) {
   my $data = eval { decode_json $json };
-  return {error=>$@, full=>$json} if $@;
+  return {detail=>$@, full=>$json} if $@;
   return $data;
 }
 
