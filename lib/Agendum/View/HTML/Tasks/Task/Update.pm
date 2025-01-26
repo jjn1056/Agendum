@@ -14,11 +14,6 @@ __PACKAGE__->meta->make_immutable;
 __DATA__
 # Custom Styles
 % push_style(sub {
-    /* Add a maximum width to the form for desktop screens */
-    .form-container {
-      max-width: 800px;
-    }
-
     /* Ensure the checkbox list wraps properly */
     .checkbox-list {
       display: flex;
@@ -28,6 +23,6 @@ __DATA__
 % })
 # Main Content
 %= view('HTML::Navbar', active_link=>'task_list')
-<div class="container form-container mt-5 mb-5">
+<div class="container col-8 mt-5 mb-5">
   %= view('HTML::Tasks::Task::_Form', task=>$task, saved=>$saved)
 </div>

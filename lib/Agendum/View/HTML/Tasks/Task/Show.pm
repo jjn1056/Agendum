@@ -23,14 +23,10 @@ __PACKAGE__->meta->make_immutable;
 __DATA__
 # Custom Styles
 % push_style(sub {
-    /* Add a maximum width to the form for desktop screens */
-    .show-container {
-      max-width: 800px;
-    }
 % })
 # Main Content
 %= view('HTML::Navbar', active_link=>'task_list')
-<div class="container show-container mt-5 mb-5">
+<div class="container col-8 mt-5 mb-5">
   <div class="card shadow-sm">
     <div class="card-header bg-primary text-white">
       <h5 class="mb-0">Task Details</h5>

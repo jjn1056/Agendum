@@ -5,13 +5,19 @@ use Agendum::Syntax;
 
 extends 'Agendum::Controller';
 
-has user => (is=>'ro', required=>1, default=>sub($self) {$self->ctx->user});
+has user => (
+  is => 'ro',
+  required => 1,
+  default => sub($self) {$self->ctx->user}
+);
 
 ## ANY /...
 sub root :At('/...') Via('../public') ($self, $c) { }
 
   ## ANY /login
   sub login :At('login/...') Via('root') ($self, $c) {
+    return $c->redirect_to_action('/home/user')
+      if $self->user->authenticated; 
     $self->view_for('login', user => $self->user);
   }
 

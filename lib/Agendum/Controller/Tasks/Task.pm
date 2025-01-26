@@ -31,8 +31,6 @@ sub root :At('/...') Via('../root') ($self, $c, $tasks) { $c->action->next($task
         return $self->process_request($new_task, $rm, $q);
       }
 
-  ### UPDATE ACTIONS ###
-
   # ANY /tasks/$id/...
   sub find :At('{:Int}/...') Via('root') ($self, $c, $tasks, $task_id) {
     my $task = $tasks->find({task_id=>$task_id})
@@ -40,15 +38,7 @@ sub root :At('/...') Via('../root') ($self, $c, $tasks) { $c->action->next($task
     $c->action->next($task);
   }
 
-    # GET /tasks/$id
-    sub show :Get('') Via('find') ($self, $c, $task) {
-      return $self->view(task => $task);
-    }
-
-    # DELETE /tasks/$id
-    sub delete :Delete('') Via('find') ($self, $c, $task) {
-      return $task->delete && $c->redirect_to_action('../list');
-    }
+    ### UPDATE ACTIONS ###
 
     # ANY /tasks/$id/update/...
     sub setup_update :At('update/...') Via('find') ($self, $c, $task) {
@@ -63,6 +53,18 @@ sub root :At('/...') Via('../root') ($self, $c, $tasks) { $c->action->next($task
       sub update :Patch('') Via('setup_update') BodyModelFor('create') QueryModelFor('create') ($self, $c, $task, $rm, $q) {
         return $self->process_request($task, $rm, $q);
       }
+
+    ### DELETE AND DISPLAY ACTIONS ###
+
+    # GET /tasks/$id
+    sub show :Get('') Via('find') ($self, $c, $task) {
+      return $self->view(task => $task);
+    }
+
+    # DELETE /tasks/$id
+    sub delete :Delete('') Via('find') ($self, $c, $task) {
+      return $task->delete && $c->redirect_to_action('../list');
+    }
 
 ### SHARED METHODS ###
 

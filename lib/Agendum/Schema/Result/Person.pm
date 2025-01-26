@@ -53,16 +53,16 @@ sub authenticated ($self) {
   return $self->in_storage;
 }
 
-sub authenticate($self, $email, $password) {
-  my $found = $self->result_source->resultset->find({email=>$email});
-  if($found && $found->check_password($password)) {
-    %$self = %$found;
-    return $self;
-  } else {
-    $self->errors->add(undef, 'Invalid login credentials');
-    $self->username($username) if defined($username);
-    return 0;
-  }
+## When called via an unauthenticated user, try to authenticate 
+## the user with the given email and password. If successful,
+## overwrite $self with the found object and return true, otherwise
+## add an error to the errors object and return false.
+
+sub validate_credentials($self, $email, $password) {
+  %$self = %{$self->result_source->resultset->find_or_new({email=>$email})};
+  $self->errors->add(undef, 'Invalid login credentials')
+    unless $self->check_password($password);
+  return $self;
 }
 
 sub registered($self) {

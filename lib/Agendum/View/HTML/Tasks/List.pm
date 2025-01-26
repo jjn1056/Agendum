@@ -62,9 +62,6 @@ __DATA__
 # Custom Styles
 #
 % push_style(sub {
-    .list-container {
-      max-width: 800px;
-    }
     .pager_current_page {
       font-weight: bold;
     }
@@ -104,7 +101,7 @@ __DATA__
 # Main Content: Task List
 #
 %= view('HTML::Navbar', active_link=>'task_list')
-<div class="container mt-5 list-container">
+<div class="container col-8 mt-5 mx-auto">
   %= pager_for('tasks', +{}, sub ($self, $pager, $tasks) {
     <table class='table table-striped'>
       <legend class="text-muted fs-5 mb-2 pb-1 border-bottom">$pager->window_info</legend>

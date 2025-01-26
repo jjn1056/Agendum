@@ -2,9 +2,6 @@ package Agendum::Model::Session;
 
 use Moose;
 use Agendum::Syntax;
-use Crypt::PRNG qw(random_bytes);
-use MIME::Base64;
-
 
 extends 'Catalyst::Model';
 with 'Catalyst::Component::InstancePerContext';
