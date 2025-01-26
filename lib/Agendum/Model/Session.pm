@@ -9,44 +9,18 @@ use MIME::Base64;
 extends 'Catalyst::Model';
 with 'Catalyst::Component::InstancePerContext';
 
-has person_id => (is=>'rw', clearer=>'clear_person_id', predicate=>'has_person_id');
-has oauth2_state => (is=>'rw', clearer=>'clear_oauth2_state', predicate=>'has_oauth2_state');
-has access_token => (is=>'rw', clearer=>'clear_access_token', predicate=>'has_access_token');
-has refresh_token => (is=>'rw', clearer=>'clear_refresh_token', predicate=>'has_refresh_token');
+has user_id => (is=>'rw', clearer=>'clear_user_id', predicate=>'has_user_id');
 
 sub build_per_context_instance($self, $c) {
   return bless $c->session, ref($self);
 }
 
-# Set the access and refresh tokens in the session
-sub set_oauth2_tokens($self, $access, $refresh) {
-  $self->access_token($access);
-  $self->refresh_token($refresh);
+sub set_user($self, $user) {
+  $self->user_id($user->id);
 }
 
-# Clear the person_id and the oauth2_state
-sub logout($self) {
-  $self->clear_person_id;
-  $self->clear_oauth2_state;
-  $self->clear_access_token;
-  $self->clear_refresh_token;
-}
-
-# Check the oauth2 state and clear it, because this is a one time use
-sub check_oauth2_state($self, $state) {
-  my $check = $self->oauth2_state eq $state;
-  $self->clear_oauth2_state;
-  return $check;
-}
-
-sub generate_oauth2_state($self) {
-  my $length =  32; # Default length is 32 bytes
-  my $random_bytes = random_bytes($length); # Generate cryptographically secure random bytes
-  my $nonce = encode_base64($random_bytes, ''); # Encode to base64 (URL safe)
-  $nonce =~ tr/+=\//-_/d; # Make it URL Query parameter safe
-
-  $self->oauth2_state($nonce); # Save the nonce in the session
-  return $nonce;
+sub clear_user($self) {
+  $self->clear_user_id;
 }
 
 __PACKAGE__->meta->make_immutable;

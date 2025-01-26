@@ -19,8 +19,7 @@ sub root :At('/...') Via('../public') ($self, $c) { }
 
   # GET /  (but logged in)
   sub user :Get('') Via('root') Does(Authenticated) ($self, $c) {
-    my ($userinfo, $err) = $c->model('WebService::Catme::API')->userinfo;  
-    return $self->view(data=>$userinfo);
+    return $self->view();
   }
 
 __PACKAGE__->meta->make_immutable;

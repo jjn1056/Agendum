@@ -17,7 +17,7 @@ sub root :At('/...') Via('../root') ($self, $c, $tasks) { $c->action->next($task
     $c->action->next($new_task);
   }
 
-    # ANY /tasks/$id/create/...
+    # ANY /tasks/create/...
     sub setup_create :At('create/...') Via('build') ($self, $c, $new_task) {
       $self->view_for('create', task => $new_task);
       $c->action->next($new_task);
@@ -35,7 +35,7 @@ sub root :At('/...') Via('../root') ($self, $c, $tasks) { $c->action->next($task
 
   # ANY /tasks/$id/...
   sub find :At('{:Int}/...') Via('root') ($self, $c, $tasks, $task_id) {
-    my $task = $tasks->find($task_id)
+    my $task = $tasks->find({task_id=>$task_id})
       // return $c->detach_error(404);
     $c->action->next($task);
   }

@@ -96,8 +96,8 @@ __DATA__
     <div class="card-footer">
       <div class="d-flex gap-2 pb-2">
         <!-- Equal-width buttons -->
-        <a href="$self->ctx->uri('update',[$self->task->id])" class="btn btn-primary flex-fill text-center">Edit</a>
-        <form method="post" action="$self->ctx->uri('delete', [$self->task->id],{'x-tunneled-method'=>'delete'})" class="flex-fill">
+        <a href="$self->ctx->uri('update',[$self->task->task_id])" class="btn btn-primary flex-fill text-center">Edit</a>
+        <form method="post" action="$self->ctx->uri('delete', [$self->task->task_id],{'x-tunneled-method'=>'delete'})" class="flex-fill">
           <button 
             class="btn btn-danger w-100" 
             onclick="return confirm('Are you sure you want to delete this task?')">Delete</button>

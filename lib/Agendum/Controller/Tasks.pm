@@ -7,7 +7,7 @@ extends 'Agendum::Controller';
 
 # ANY /tasks/...
 sub root :At('/tasks/...') Via('../private') ($self, $c) {
-  $c->action->next(my $tasks = $c->model->with_comments_labels);
+  $c->action->next(my $tasks = $c->user->search_related('tasks')->with_comments_labels);
 }
 
   # GET /tasks/list

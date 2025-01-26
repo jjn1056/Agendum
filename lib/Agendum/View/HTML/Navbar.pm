@@ -23,7 +23,7 @@ sub navlinks ($self) {
 
 sub generate_navlinks ($self, $cb) {
   my @links = ();
-  if($self->ctx->model('Session::User')->authenticated) {
+  if($self->ctx->user->authenticated) {
     foreach my $link ($self->navlinks) {
       push @links, $cb->(
         $self->active_link_eq($link->{data}{key}), 
@@ -34,8 +34,12 @@ sub generate_navlinks ($self, $cb) {
   } else {
     push @links, $cb->(
       $self->active_link_eq('login'),
-      $self->ctx->uri('/session/login'),
+      $self->ctx->uri('/session/show'),
       'Login');
+    push @links, $cb->(
+      $self->active_link_eq('register'),
+      $self->ctx->uri('/register/build'),
+      'Register');
   }
   return $self->safe_concat(@links);
 }

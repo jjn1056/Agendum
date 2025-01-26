@@ -8,9 +8,9 @@ requires 'Catalyst::ControllerRole::At', '0.008';
 requires 'Catalyst::Model::DBIC::Schema', '0.66';
 requires 'Catalyst::View::EmbeddedPerl::PerRequest', '0.001018';
 requires 'Catalyst::View::EmbeddedPerl::PerRequest::ValiantRole', '0.001006';
-requires 'Crypt::JWT', '0.035';
+requires 'CatalystX::Errors', '0.001009';
 requires 'CryptX', '0.084';
-requires 'DBIx::Class', '0.082843';
+requires 'DBIx::Class', '0.082844';
 requires 'DBIx::Class::BcryptColumn', '0.001003';
 requires 'DBIx::Class::Helpers', '2.037000';
 requires 'DBIx::Class::ResultClass::TrackColumns', '0.001002';
@@ -19,9 +19,7 @@ requires 'Valiant', '0.002015';
 requires 'DateTime', '1.65';
 requires 'DateTime::Format::Pg', '0.16014';
 requires 'IO', '1.55';
-requires 'IO::Socket::SSL', '2.089';
 requires 'Import::Into', '1.002005';
-requires 'JSON::MaybeXS', '1.004008';
 requires 'MIME::Base64', '3.16';
 requires 'Moose', '2.2207';
 requires 'Object::Tap', '1.000006';
@@ -30,7 +28,6 @@ requires 'Plack', '1.0051';
 requires 'Type::Tiny', '2.006000';
 requires 'URI', '5.31';
 requires 'base', '2.23';
-
 
 # These are Catalyst Plugins that get loaded dynamically so are not
 # detected by the scanner.  We need to add them manually and manage

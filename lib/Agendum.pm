@@ -29,7 +29,6 @@ __PACKAGE__->setup_plugins([qw/
 __PACKAGE__->config(
   disable_component_resolution_regex_fallback => 1,
   using_frontend_proxy => 1,
-  default_model => 'Schema::Task',
   'Plugin::Session' => { storage_secret_key => $ENV{SESSION_STORAGE_SECRET} },
   'Plugin::CSRFToken' => { auto_check =>1, default_secret => $ENV{CSRF_SECRET}, max_age=>36000 },
   'Model::Schema' => {
@@ -41,24 +40,36 @@ __PACKAGE__->config(
       password => $ENV{POSTGRES_PASSWORD},
     },
   },
-  'Model::WebService::Catme::Auth' => {
-    client_id => $ENV{CATME_OAUTH2_CLIENT_ID},
-    client_secret => $ENV{CATME_OAUTH2_CLIENT_SECRET},
-    open_id_conf_url => $ENV{CATME_OAUTH2_OPENID_CONF},
-    jwks_uri => $ENV{CATME_OAUTH2_JWKS_URI},
-  },
 );
+
+has user => (
+  is => 'rw',
+  lazy => 1,
+  required => 1,
+  builder => '_get_user_from_session',
+  clearer => 'clear_user',
+);
+
+sub _get_user_from_session($self) {
+  return $self->model('Schema::Person')->unauthenticated_user
+    unless $self->model('Session')->has_user_id;
+  return $self->model('Schema::Person')->find($self->model('Session')->user_id)
+}
+
+sub login($self, $user, $email, $password) {
+  $user->authenticate($email, $password)
+    ? $self->model('Session')->set_user($user)
+    : return 0;
+  return 1;
+}
+
+sub logout($self) {
+  $self->clear_user;
+  $self->model('Session')->clear_user;
+}
 
 sub is_development {
   return $ENV{AGENDUM_ENV} eq 'dev';
-}
-
-my $base_uri = URI->new("https://$ENV{CATME_HOST}:$ENV{CATME_PORT}");
-sub catme_uri_for($self, $path='', $query=+{}) {
-  my $uri = URI->new($base_uri);
-  $uri->path($path) if $path;
-  $uri->query_form($query) if $query;
-  return $uri;
 }
 
 __PACKAGE__->setup();

@@ -38,13 +38,13 @@ sub status ($self, $task) {
 sub over_tasks ($self, $cb) {
   my @display_tasks = map {
     +{
-      id => $_->id,
+      id => $_->task_id,
       title => $_->title,
       priority => $self->priority($_),
       due_date => $self->due_date($_),
       status => $self->status($_),
-      edit_url => $self->ctx->uri('task/update', [$_->id]),
-      show_url => $self->ctx->uri('task/show', [$_->id]),
+      edit_url => $self->ctx->uri('task/update', [$_->task_id]),
+      show_url => $self->ctx->uri('task/show', [$_->task_id]),
     }
   } $self->tasks->all;
   return $self->over(@display_tasks, $cb);

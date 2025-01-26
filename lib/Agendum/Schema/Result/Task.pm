@@ -7,6 +7,7 @@ __PACKAGE__->table("tasks");
 
 __PACKAGE__->add_columns(
   task_id => { data_type => 'integer', is_nullable => 0, is_auto_increment => 1 },
+  person_id => { data_type => 'integer', is_nullable => 0 },
   title => { data_type => 'varchar', is_nullable => 0, size => 255 },
   description => { data_type => 'text', is_nullable => 1 },
   due_date => { data_type => 'date', is_nullable => 1 },
@@ -16,17 +17,26 @@ __PACKAGE__->add_columns(
   updated_at => { data_type => 'timestamptz', is_nullable => 1, default_value => \'NOW()' },
 );
 
-__PACKAGE__->set_primary_key("task_id");
+__PACKAGE__->set_primary_key("task_id", "person_id");
+
+__PACKAGE__->belongs_to(
+  task => 'Agendum::Schema::Result::Task',
+  {
+    'foreign.task_id' => 'self.task_id'
+  }
+);
 
 __PACKAGE__->has_many(
-  comments =>
-  'Agendum::Schema::Result::Comment',
-  { 'foreign.task_id' => 'self.task_id' }
+  comments => 'Agendum::Schema::Result::Comment',
+  {
+    'foreign.task_id' => 'self.task_id',
+    'foreign.person_id' => 'self.person_id',
+  }
 );
 
 __PACKAGE__->has_many(
   task_labels => 'Agendum::Schema::Result::TaskLabel',
-  { 'foreign.task_id' => 'self.task_id' }
+  { 'foreign.task_id' => 'self.task_id',  'foreign.person_id' => 'self.person_id' }
 );
 
 __PACKAGE__->many_to_many('labels', 'task_labels', 'label');
