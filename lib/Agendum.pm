@@ -27,7 +27,7 @@ __PACKAGE__->setup_plugins([qw/
 
 # Global configuration
 
-__PACKAGE__->config(Agendum::Config->config());
+__PACKAGE__->config(Agendum::Config->catalyst());
 __PACKAGE__->setup();
 
 # Logged in user handling

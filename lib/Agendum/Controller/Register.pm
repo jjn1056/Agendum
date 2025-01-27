@@ -21,8 +21,8 @@ sub root :At('register/...') Via('../public')  ($self, $c) {
 
     # POST /register
     sub create :Post('') Via('prepare_build') BodyModel ($self, $c, $bm) {
-      return $c->redirect_to_action('/session/login')
-        if $self->user->register($bm);
+      return $c->redirect_to_action('/session/show')
+        if $self->user->register($bm)->valid;
     }
 
 __PACKAGE__->meta->make_immutable; 

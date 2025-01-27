@@ -1,18 +1,22 @@
 package Agendum::Controller::Tasks;
 
-use CatalystX::Moose;
+use CatalystX::Object;
 use Agendum::Syntax;
 
 extends 'Agendum::Controller';
 
+has_shared 'tasks', (
+  default => sub ($self) {
+    return $self->ctx->user->search_related('tasks')->with_comments_labels;
+  }
+);
+
 # ANY /tasks/...
-sub root :At('/tasks/...') Via('../private') ($self, $c) {
-  $c->action->next(my $tasks = $c->user->search_related('tasks')->with_comments_labels);
-}
+sub root :At('/tasks/...') Via('../private') ($self, $c) { }
 
   # GET /tasks/list
-  sub list :Get('list') Via('root') QueryModel() ($self, $c, $tasks, $qm) {
-    return $self->view(tasks => $tasks->page($qm->page));
+  sub list :Get('list') Via('root') QueryModel() ($self, $c, $qm) {
+    return $self->view(tasks => $self->tasks->page($qm->page));
   }
 
 __PACKAGE__->meta->make_immutable;

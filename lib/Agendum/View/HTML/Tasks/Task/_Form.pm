@@ -8,6 +8,17 @@ extends 'Agendum::View::HTML';
 has task => ( is => 'ro', required => 1, export=>1 );
 has saved => ( is => 'ro', required => 1 );
 
+has action => (
+  is => 'ro', 
+  required => 1, 
+  lazy => 1, 
+  default => sub ($self) {
+    return $self->task->in_storage
+      ? $self->ctx->uri('update', [$self->task->task_id])
+      : $self->ctx->uri('create');
+  }
+);
+
 sub priority_options ($self) {
   return [
     ['1 - Low', 1],
@@ -44,6 +55,10 @@ sub if_saved ($self, $cb) {
   }
 }
 
+sub task_form($self, $cb) {
+  return $self->form_for('task', { action => $self->action }, $cb);
+}
+
 __PACKAGE__->meta->make_immutable;
 
 __DATA__
@@ -61,7 +76,7 @@ __DATA__
 #
 # Main Content: Task Form
 #
-%= form_for('task', sub($self, $fb, $task) {
+%= $self->task_form(sub($self, $fb, $task) {
 
    # Add a fieldset for task details
   <fieldset class="mb-4">

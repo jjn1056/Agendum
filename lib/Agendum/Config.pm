@@ -14,7 +14,7 @@ sub db_connect_info($class) {
   };
 }
 
-sub config($class) {
+sub catalyst($class) {
   return (
     disable_component_resolution_regex_fallback => 1,
     using_frontend_proxy => 1,

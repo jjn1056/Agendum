@@ -1,78 +1,78 @@
 package Agendum::Controller::Tasks::Task;
 
-use CatalystX::Moose;
+use CatalystX::Object;
 use Agendum::Syntax;
 use Types::Standard qw(Int);
 
 extends 'Agendum::Controller';
 
+has_shared 'tasks';
+has 'task' => (is=>'rw');
+
 # ANY /tasks/...
-sub root :At('/...') Via('../root') ($self, $c, $tasks) { $c->action->next($tasks) }
+sub root :At('/...') Via('../root') ($self, $c) { }
 
   ### CREATE ACTIONS ###
 
   # ANY /tasks/...
-  sub build :At('/...') Via('root') ($self, $c, $tasks) {
-    my $new_task = $tasks->new_task;
-    $c->action->next($new_task);
+  sub build :At('/...') Via('root') ($self, $c) {
+    $self->task($self->tasks->new_task);
   }
 
     # ANY /tasks/create/...
-    sub setup_create :At('create/...') Via('build') ($self, $c, $new_task) {
-      $self->view_for('create', task => $new_task);
-      $c->action->next($new_task);
+    sub setup_create :At('create/...') Via('build') ($self, $c) {
+      $self->view_for('create', task => $self->task);
     }
 
       # GET /tasks/create
-      sub show_create :Get('') Via('setup_create') ($self, $c, $new_task) { return }
+      sub show_create :Get('') Via('setup_create') ($self, $c) { return }
 
       # POST /tasks/create
-      sub create :Post('') Via('setup_create') BodyModel() QueryModel() ($self, $c, $new_task, $rm, $q) {
-        return $self->process_request($new_task, $rm, $q);
+      sub create :Post('') Via('setup_create') BodyModel() QueryModel() ($self, $c, $rm, $q) {
+        return $self->process_request($rm, $q);
       }
 
   # ANY /tasks/$id/...
-  sub find :At('{:Int}/...') Via('root') ($self, $c, $tasks, $task_id) {
-    my $task = $tasks->find({task_id=>$task_id})
+  sub find :At('{:Int}/...') Via('root') ($self, $c, $task_id) {
+    my $task = $self->tasks->find({task_id=>$task_id})
       // return $c->detach_error(404);
-    $c->action->next($task);
+    $self->task($task);
   }
 
     ### UPDATE ACTIONS ###
 
     # ANY /tasks/$id/update/...
-    sub setup_update :At('update/...') Via('find') ($self, $c, $task) {
-      $self->view_for('update', task => $task);
-      $c->action->next($task);
+    sub setup_update :At('update/...') Via('find') ($self, $c) {
+      $self->view_for('update', task => $self->task);
     }
 
       # GET /tasks/$id/update
-      sub show_update :Get('') Via('setup_update') ($self, $c, $task) { return }
+      sub show_update :Get('') Via('setup_update') ($self, $c) { return }
 
       # PATCH /tasks/$id/update
-      sub update :Patch('') Via('setup_update') BodyModelFor('create') QueryModelFor('create') ($self, $c, $task, $rm, $q) {
-        return $self->process_request($task, $rm, $q);
+      sub update :Patch('') Via('setup_update') BodyModelFor('create') QueryModelFor('create') ($self, $c, $rm, $q) {
+        return $self->process_request($rm, $q);
       }
 
     ### DELETE AND DISPLAY ACTIONS ###
 
     # GET /tasks/$id
-    sub show :Get('') Via('find') ($self, $c, $task) {
-      return $self->view(task => $task);
+    sub show :Get('') Via('find') ($self, $c) {
+      return $self->view(task => $self->task);
     }
 
     # DELETE /tasks/$id
-    sub delete :Delete('') Via('find') ($self, $c, $task) {
-      return $task->delete && $c->redirect_to_action('../list');
+    sub delete :Delete('') Via('find') ($self, $c) {
+      return $self->task->delete && $c->redirect_to_action('../list');
     }
 
 ### SHARED METHODS ###
 
-sub process_request($self, $task, $rm, $q) {
-  $task->set_columns_recursively($rm->nested_params);
-  return $task->validate if $q->add_empty_comment;
-  $task->insert_or_update;
-  $self->view->saved(1) if $task->valid;
+sub process_request($self, $rm, $q) {
+  $self->task->apply_request($rm);
+  return $self->task->validate if $q->add_empty_comment;
+  $self->task->insert_or_update;
+  $self->view->saved(1) if $self->task->valid;
 }
 
 __PACKAGE__->meta->make_immutable;

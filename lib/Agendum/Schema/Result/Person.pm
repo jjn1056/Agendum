@@ -18,6 +18,7 @@ __PACKAGE__->add_columns(
   },
   created_at => { data_type => 'timestamptz', is_nullable => 1, default_value => \'NOW()' },
   updated_at => { data_type => 'timestamptz', is_nullable => 1, default_value => \'NOW()' },
+  status => { data_type => 'text', is_nullable => 0, default_value => 'pending' },
 );
 
 __PACKAGE__->set_primary_key("person_id");
@@ -73,10 +74,16 @@ sub registered($self) {
     $self->in_storage ? 1:0;
 }
 
-sub register($self, $request) {
-  $self->set_columns_recursively($request->nested_params)
-    ->insert_or_update;
-  return $self->registered;
+sub register($self, $registration) {
+  $self->set_columns_recursively({
+    email => $registration->email,
+    given_name => $registration->given_name,
+    family_name => $registration->family_name,
+    password => $registration->password,
+    password_confirmation => $registration->password_confirmation,
+    status => 'active', # For now, all registrations are active
+  })->insert_or_update;
+  return $self;
 }
 
 1;

@@ -99,6 +99,8 @@ server-start: ## Start the web application (current shell)
 	@echo "Starting web application..."
 	@start_server --port $(WEB_SERVER_PORT) --pid-file=$(PID_FILE) --status-file=$(STATUS_FILE) -- \
 		$(PERL) \
+			-Ilib \
+			-I extlib/Catalyst-ControllerPerContext/lib \
 		  ./lib/$(NAMESPACE)/PSGI.pm run \
 		    --server Starman \
 				--max-workers $(SERVER_MAX_WORKERS) \

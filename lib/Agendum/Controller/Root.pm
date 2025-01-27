@@ -24,7 +24,8 @@ sub root :At('/...') ($self, $c) { }
 
   ## ANY /...
   sub private :At('/...') Via('root') ($self, $c) {
-    return $c->detach('/login') unless $c->user->authenticated;
+    return $c->redirect_to_action('/session/show') && $c->detach
+      unless $c->user->authenticated;
   }
 
 # The order of the Action Roles is important!!

@@ -14,7 +14,6 @@ has description => (is=>'ro', property=>1);
 has due_date => (is=>'ro', property=>1);
 has priority => (is=>'ro', property=>1);
 has status => (is=>'ro', property=>1);
-has labels => (is=>'ro', property=>1);
 
 has task_labels => (is=>'ro', property=>+{
   expand=>'JSON', 
