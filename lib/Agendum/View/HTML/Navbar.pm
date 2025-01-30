@@ -15,6 +15,7 @@ sub active_link_eq($self, $link) {
 sub navlinks ($self) {
   my @links = (
     +{ href => $self->ctx->uri('/home/user'), data => {title=>'Home', key=>'home_user'} },
+    +{ href => $self->ctx->uri('/profile/show_update'), data => {title=>'Profile', key=>'profile'} },
     +{ href => $self->ctx->uri('/tasks/list'), data => {title=>'Tasks', key=>'task_list'} },
     +{ href => $self->ctx->uri('/session/logout'), data => {title=>'Logout', key=>'logout'} },
   );

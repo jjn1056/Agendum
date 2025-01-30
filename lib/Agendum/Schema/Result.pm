@@ -18,6 +18,7 @@ __PACKAGE__->load_components(qw/
   ResultClass::TrackColumns
   Core
   InflateColumn::DateTime
+  Helper::Row::SelfResultSet
 /);
 
 1;

@@ -15,7 +15,6 @@ __DATA__
 # Custom Styles
 #
 % push_style(sub {
-
 % })
 #
 # Main Content: Task List

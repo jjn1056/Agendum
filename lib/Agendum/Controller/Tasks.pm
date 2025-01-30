@@ -6,8 +6,8 @@ use Agendum::Syntax;
 extends 'Agendum::Controller';
 
 has_shared 'tasks', (
-  default => sub ($self) {
-    return $self->ctx->user->search_related('tasks')->with_comments_labels;
+  default => sub ($self, $c) {
+    return $c->user->search_related('tasks')->with_comments_labels;
   }
 );
 

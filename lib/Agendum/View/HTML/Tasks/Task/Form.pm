@@ -1,9 +1,9 @@
-package Agendum::View::HTML::Tasks::Task::_Form;
+package Agendum::View::HTML::Tasks::Task::Form;
 
 use CatalystX::Moose;
 use Agendum::Syntax;
 
-extends 'Agendum::View::HTML';
+extends 'Agendum::View::HTML::Fragment';
 
 has task => ( is => 'ro', required => 1, export=>1 );
 has saved => ( is => 'ro', required => 1 );

@@ -1,7 +1,7 @@
-FROM perl:5.40.0
+FROM perl:5.40.1
 WORKDIR /app
 
-# Core OS setup
+# Core OS setup.  Add a few bits that I often use for debugging
 
 RUN apt-get update
 RUN apt-get install -yV postgresql-client git vim build-essential libssl-dev dnsutils 
@@ -16,7 +16,7 @@ RUN rm -rf /var/lib/apt/lists/*
 # add application dependencies here.  You add those to the
 # cpanfile.
 
-RUN cpanm --notest --reinstall App::cpanminus
+RUN cpanm --notest --reinstall App::cpanminus # Get lastest version
 
 # Copy only the files needed for installing dependencies
 # We do a two step process to avoid rebuilding the image

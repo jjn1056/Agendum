@@ -39,6 +39,11 @@ __PACKAGE__->has_many(
   { 'foreign.person_id' => 'self.person_id' }
 );
 
+__PACKAGE__->might_have(
+  profile =>
+  'Agendum::Schema::Result::Profile',
+  { 'foreign.person_id' => 'self.person_id' }
+);
 
 __PACKAGE__->validates(email => presence=>1, length=>[3,24], format=>'email', unique=>1);
 __PACKAGE__->validates( password => (presence=>1, length=>[3,24], confirmation => 1,  on=>'create' ));
@@ -49,6 +54,8 @@ __PACKAGE__->validates( password => (confirmation => {
 
 __PACKAGE__->validates(given_name => (presence=>1, length=>[2,24]));
 __PACKAGE__->validates(family_name => (presence=>1, length=>[2,48]));
+
+__PACKAGE__->accept_nested_for('profile');
 
 sub authenticated ($self) {
   return $self->in_storage;
@@ -84,6 +91,34 @@ sub register($self, $registration) {
     status => 'active', # For now, all registrations are active
   })->insert_or_update;
   return $self;
+}
+
+sub with_profile($self) {
+  my $profile = $self->self_rs->find(
+    { 'me.person_id' => $self->person_id },
+    { prefetch => ['profile', {profile=>'state'}, {profile=>'employment'}] }
+  );
+  $profile->build_related_if_empty('profile'); # Needed since the relationship is optional
+  $profile->profile->build_related_if_empty('employment'); # Needed since the relationship is optional
+  return $profile;
+}
+
+sub apply($self, $params) {
+  $self->set_columns_recursively($params)->insert_or_update;
+  return $self;
+}
+
+## There's are proxied to other resultsets for now but we expect that
+## ecentually they could be impacted by the current user.
+
+sub viewable_states {
+  my $self = shift;
+  return $self->result_source->schema->resultset('State');
+}
+
+sub viewable_employment {
+  my $self = shift;
+  return $self->result_source->schema->resultset('Employment');
 }
 
 1;
