@@ -103,6 +103,8 @@ server-start: ## Start the web application (current shell)
 			-I extlib/Catalyst-ControllerPerContext/lib \
 			-I extlib/Catalyst-View-EmbeddedPerl/lib \
 			-I extlib/Valiant/lib \
+			-I extlib/CatalystX-RequestModel/lib \
+			-I extlib/Catalyst-Runtime/lib \
 		  ./lib/$(NAMESPACE)/PSGI.pm run \
 		    --server Starman \
 				--max-workers $(SERVER_MAX_WORKERS) \
@@ -143,7 +145,7 @@ stack-restart: update-all server-restart ## Restart the stack
 
 start: up ## Alias for 'up'
 
-up: ## Start the docker containers
+up: prune ## Start the docker containers
 	@DOCKER_BUILDKIT=1 $(DOCKER) up -d --build --force-recreate
 	@echo "Started application. Visit http://localhost:$(WEB_SERVER_PORT)/"
 

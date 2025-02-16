@@ -1,7 +1,7 @@
 # use 'make dependencies' to manage this list.
 
 requires 'Catalyst::Runtime', '5.90132';
-requires 'CatalystX::RequestModel', '0.019';
+requires 'CatalystX::RequestModel', '0.020';
 requires 'Catalyst::Component::InstancePerContext', '0.001001';
 requires 'Catalyst::ControllerPerContext', '0.008';
 requires 'Catalyst::ControllerRole::At', '0.008';

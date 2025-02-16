@@ -8,8 +8,8 @@ namespace 'user_profile';
 content_type 'application/x-www-form-urlencoded';
 
 has email => (is=>'ro', property=>1);  
-has first_name => (is=>'ro', property=>1);
-has last_name => (is=>'ro', property=>1);
+has given_name => (is=>'ro', property=>1);
+has family_name => (is=>'ro', property=>1);
 has profile => (is=>'ro', property=>+{model=>'::Profile' });
 
 __PACKAGE__->meta->make_immutable();

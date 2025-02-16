@@ -1,4 +1,4 @@
-FROM perl:5.40.1
+FROM perl:5.40.1-bookworm
 WORKDIR /app
 
 # Core OS setup.  Add a few bits that I often use for debugging

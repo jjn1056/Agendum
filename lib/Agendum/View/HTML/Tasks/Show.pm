@@ -1,4 +1,4 @@
-package Agendum::View::HTML::Tasks::Task::Show;
+package Agendum::View::HTML::Tasks::Show;
 
 use CatalystX::Moose;
 use Agendum::Syntax;
@@ -99,7 +99,7 @@ __DATA__
             onclick="return confirm('Are you sure you want to delete this task?')">Delete</button>
         </form>
       </div>
-      <a href="$self->ctx->uri('../list')" class="btn btn-success flex-fill text-center w-100">Return to List</a>
+      <a href="$self->ctx->uri('list')" class="btn btn-success flex-fill text-center w-100">Return to List</a>
     </div>
   </div>
 </div>

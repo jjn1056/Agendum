@@ -81,13 +81,9 @@ sub registered($self) {
     $self->in_storage ? 1:0;
 }
 
-sub register($self, $registration) {
+sub register($self, $data) {
   $self->set_columns_recursively({
-    email => $registration->email,
-    given_name => $registration->given_name,
-    family_name => $registration->family_name,
-    password => $registration->password,
-    password_confirmation => $registration->password_confirmation,
+    %$data,
     status => 'active', # For now, all registrations are active
   })->insert_or_update;
   return $self;

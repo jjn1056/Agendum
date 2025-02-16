@@ -102,35 +102,11 @@ sub has_new_comment($self) {
   } $self->comments->all;
 }
 
-sub apply_request($self, $req) {
-
-
-  my $data = +{
-    title => $req->title,
-    description => $req->description,
-    due_date => $req->due_date,
-    priority => $req->priority,
-    status => $req->status,
-    task_labels => [
-      map { {label_id => $_->label_id} }  @{$req->get('task_labels')}
-    ],
-    comments => [
-      map { 
-        {
-          comment_id => $_->comment_id,
-          content => $_->content,
-          ($_->get('_add') ? (_add => $_->get('_add')) : ()),
-        } 
-      } @{$req->get('comments')}
-    ],
-  };
-  
-  use Devel::Dwarn;
-  Dwarn $data;
-  Dwarn $req->nested_params;
-
-  $self->set_columns_recursively($req->nested_params)->insert_or_update;
+sub apply($self, $data, $insert_or_update=1) {
+  $self->set_columns_recursively($data);
+  $self->insert_or_update if $insert_or_update;
   return $self;
 }
+
 
 1;

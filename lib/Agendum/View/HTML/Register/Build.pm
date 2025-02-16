@@ -1,11 +1,11 @@
 package Agendum::View::HTML::Register::Build;
 
-use CatalystX::Moose;
+use CatalystX::Object;
 use Agendum::Syntax;
 
 extends 'Agendum::View::HTML::Page';
 
-has user => (is=>'ro', required=>1);
+has_shared user => (is=>'ro', required=>1);
 
 sub title ($self) { return 'Register' }
 

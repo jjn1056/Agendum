@@ -43,8 +43,8 @@ sub over_tasks ($self, $cb) {
       priority => $self->priority($_),
       due_date => $self->due_date($_),
       status => $self->status($_),
-      edit_url => $self->ctx->uri('task/update', [$_->task_id]),
-      show_url => $self->ctx->uri('task/show', [$_->task_id]),
+      edit_url => $self->ctx->uri('update', [$_->task_id]),
+      show_url => $self->ctx->uri('show', [$_->task_id]),
     }
   } $self->tasks->all;
   return $self->over(@display_tasks, $cb);
@@ -143,6 +143,6 @@ __DATA__
     </table>
   % })
   <div class="mt-4 mb-4">
-  <a href="$self->ctx->uri('task/create')" class="btn btn-primary w-100">Add Task</a>
+  <a href="$self->ctx->uri('create')" class="btn btn-primary w-100">Add Task</a>
   </div>
 </div>

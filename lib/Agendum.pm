@@ -41,9 +41,13 @@ has user => (
 );
 
 sub _get_user_from_session($self) {
-  return $self->model('Session')->has_user_id
-    ? $self->model('Schema::Person')->find($self->model('Session')->user_id)
-    : $self->model('Schema::Person')->unauthenticated_user;
+  if($self->model('Session')->has_user_id) {
+    my $user = $self->model('Schema::Person')->find($self->model('Session')->user_id);
+    return $user if $user;
+    $self->log->warn("User ID in session not found: " . $self->model('Session')->user_id);
+    $self->model('Session')->clear_user;
+  }
+  return $self->model('Schema::Person')->unauthenticated_user;
 }
 
 sub login($self, $user, $email, $password) {

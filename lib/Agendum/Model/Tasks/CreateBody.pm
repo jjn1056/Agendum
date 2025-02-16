@@ -1,4 +1,4 @@
-package Agendum::Model::Tasks::Task::CreateBody;
+package Agendum::Model::Tasks::CreateBody;
 
 use Moose;
 use CatalystX::RequestModel;
@@ -24,9 +24,18 @@ has task_labels => (is=>'ro', property=>+{
 
 has comments => (is=>'ro', property=>+{ indexed=>1, model=>'::Comments' });
 
+sub is_adding_comment ($self) {
+  my $comments = $self->comments;
+  return unless $comments;
+  foreach my $comment (@$comments) {
+    return 1 if $comment->_add;
+  }
+  return;
+}
+
 __PACKAGE__->meta->make_immutable();
 
-package Agendum::Model::Tasks::Task::CreateBody::TaskLabel;
+package Agendum::Model::Tasks::CreateBody::TaskLabel;
 
 use Moose;
 use CatalystX::RequestModel;
@@ -37,7 +46,7 @@ has label_id => (is=>'ro', property=>1);
 
 __PACKAGE__->meta->make_immutable();
 
-package Agendum::Model::Tasks::Task::CreateBody::Comments;
+package Agendum::Model::Tasks::CreateBody::Comments;
 
 use Moose;
 use CatalystX::RequestModel;
@@ -47,5 +56,6 @@ extends 'Catalyst::Model';
 has comment_id => (is=>'ro', property=>1);
 has content => (is=>'ro', property=>1);
 has _add => (is=>'ro', property=>1);
+has _delete => (is=>'ro', property=>1);
 
 __PACKAGE__->meta->make_immutable();

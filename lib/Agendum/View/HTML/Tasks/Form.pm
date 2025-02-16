@@ -1,4 +1,4 @@
-package Agendum::View::HTML::Tasks::Task::Form;
+package Agendum::View::HTML::Tasks::Form;
 
 use CatalystX::Moose;
 use Agendum::Syntax;
@@ -146,21 +146,37 @@ __DATA__
       %= $fb->errors_for('comments', +{ class=>'alert alert-danger', role=>'alert' })
       <div class="col-12">
           %= $fb->fields_for('comments', sub($self, $fb_cc, $cc) {
-            # If the comment has an error show a form to fix, otherwise just show the comment
+            # If the comment is not in storage, show the text area, otherwise show the comment
             % if (!$cc->in_storage) {
               %= $fb_cc->text_area('content', {class=>"form-control", errors_classes=>"is-invalid", rows=>5, placeholder=>"Enter comment here..."})
               %= $fb_cc->errors_for('content', {class=>"invalid-feedback"})
             % } else {
-              <small class="text-muted">$cc->created_at->strftime('%Y-%m-%d %H:%M %Z')</small>
-              <p>$cc->content</p>
-              %= $fb_cc->hidden('content')
+              <div class="row">
+                <div class="col-10">
+                <small class="text-muted">$cc->created_at->strftime('%Y-%m-%d %H:%M %Z')</small>
+                <p>$cc->content</p>
+                </div>
+                <div class="col-2">
+                  %= $fb_cc->hidden('_delete') if $cc->is_marked_for_deletion
+                  <%= $fb_cc->button(
+                    '_delete',
+                    {
+                      class => "btn btn-danger w-100",
+                      onclick => "return confirm('Are you sure you want to delete this comment?')", 
+                      value => 1, 
+                      disabled => $cc->is_marked_for_deletion,
+                      type => "submit"
+                    }, ($cc->is_marked_for_deletion ? 'Deleting':'Delete')) %>
+                </div>
+                %= $fb_cc->hidden('content')
+              </div>
             % }
           % }, sub($self, $fb_final, $new_cc) {
             % if ($task->comments->count == 0) {
               <div class="alert alert-info" role="alert">No comments yet</div>
             % }
             % if( !$fb->errors_for('comments') && !$task->comments->final_comment_unstored ) {
-              %= $fb_final->button( '_add', {class=>"btn btn-primary w-100", formaction=>$fb->form_action_for({add_empty_comment=>1}), value=>1, type=>"submit"}, 'Add Comment') 
+              %= $fb_final->button( '_add', {class=>"btn btn-primary w-100", value=>1, type=>"submit"}, 'Add Comment') 
             % } 
           % }) 
       </div>
@@ -177,6 +193,6 @@ __DATA__
           Delete $task->model_name->human
       </button>
     % }
-    <a href="$self->ctx->uri('../list')" class="btn btn-success w-100">Return to List</a>
+    <a href="$self->ctx->uri('list')" class="btn btn-success w-100">Return to List</a>
   </div>
 % })
