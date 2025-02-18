@@ -189,7 +189,7 @@ __DATA__
       <button 
         class="btn mb-2 btn-danger w-100"
         onclick="return confirm('Are you sure you want to delete this task?')"
-        formaction="$self->ctx->uri('delete', [$task->task_id], {'x-tunneled-method'=>'delete'})">
+        formaction="$c->uri('delete', [$task->task_id], {'x-tunneled-method'=>'delete'})">
           Delete $task->model_name->human
       </button>
     % }

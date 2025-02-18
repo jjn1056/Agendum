@@ -29,6 +29,8 @@ requires 'Type::Tiny', '2.006000';
 requires 'URI', '5.31';
 requires 'base', '2.23';
 
+requires 'MooseX::NonMoose';
+
 # These are Catalyst Plugins that get loaded dynamically so are not
 # detected by the scanner.  We need to add them manually and manage
 # their versions manually. Also a few things used by the makefile

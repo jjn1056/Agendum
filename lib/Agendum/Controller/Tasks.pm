@@ -1,3 +1,13 @@
+package Agendum::Test;
+
+use CatalystX::Object;
+use MooseX::NonMoose;
+
+extends 'Catalyst::Controller';
+
+has 'tasks' => (is => 'rw', to_view=>1);
+has 'task' => (is => 'rw', to_view=>1);
+
 package Agendum::Controller::Tasks;
 
 use CatalystX::Object;
@@ -6,20 +16,25 @@ use Types::Standard qw(Int);
 
 extends 'Agendum::Controller';
 
-has 'tasks' => (is => 'rw');
-has 'task' => (is => 'rw');
+has 'tasks' => (is => 'rw', to_view=>1);
+has 'task' => (is => 'rw', to_view=>1);
 
 # ANY /tasks/...
 sub root :At('/tasks/...') Via('../private') ($self, $c) {
   $self->tasks($c->user->search_related('tasks')->with_comments_labels);
+
+  use Devel::Dwarn;
+  warn '...................';
+  my $test = Agendum::Test->new;
+  Dwarn $test->view_attributes;
 }
 
   ## LIST ACTIONS
 
   # GET /tasks/list
   sub list :Get('list') Via('root') QueryModel() ($self, $c, $q) {
-    warn $self->tasks;
-    return $self->view_for('list', tasks => $self->tasks->page($q->page));
+    $self->tasks( $self->tasks->page($q->page));
+    return $self->view_for('list');
   }
 
   ## CREATE ACTIONS
@@ -27,7 +42,7 @@ sub root :At('/tasks/...') Via('../private') ($self, $c) {
   # ANY /tasks/create/...
   sub build :At('/create/...') Via('root') ($self, $c) {
     $self->task($self->tasks->new_task);
-    $self->view_for('create', task => $self->task);
+    $self->view_for('create');
   }
 
     # GET /tasks/create
@@ -48,7 +63,7 @@ sub root :At('/tasks/...') Via('../private') ($self, $c) {
 
     # GET /tasks/$id
     sub show :Get('') Via('find') ($self, $c) {
-      return $self->view_for('show', task => $self->task);
+      return $self->view_for('show');
     }
 
     # DELETE /tasks/$id
@@ -60,7 +75,7 @@ sub root :At('/tasks/...') Via('../private') ($self, $c) {
 
     # ANY /tasks/$id/update/...
     sub build_update :At('update/...') Via('find') ($self, $c) { 
-      $self->view_for('update', task => $self->task);
+      $self->view_for('update');
     }
 
       # GET /tasks/$id/update
